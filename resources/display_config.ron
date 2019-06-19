@@ -1,4 +1,4 @@
 (
-  title: "Paddle_Strike_Amethyst",
-  dimensions: Some((500, 500)),
+  title: "Paddle Strike!",
+  dimensions: Some((640, 480)),
 )

@@ -1,3 +1,7 @@
+# For current version of amethyst, you have to build the game with --features "vulkan" (in Windowns).
+# To make sure RLS compile amethyst_rendy correctly, please add this line to settings.json:
+# "rust.features": ["vulkan"]
+
 [package]
 name = "paddle_strike_amethyst"
 version = "0.1.0"
@@ -5,6 +9,9 @@ authors = ["Milo Hao XU (milo.h.xu@icloud.com)"]
 edition = "2018"
 
 [dependencies]
+# Changed to git url to run with the latest version of amethyst.
+# if you want to run with the release version, change this back to the version number
+# for example: amethyst ="0.11.0"
 amethyst = { git = "https://github.com/amethyst/amethyst" }
 
 [features]

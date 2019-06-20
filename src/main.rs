@@ -1,5 +1,5 @@
 //=========================
-// import amethyst modules
+// Import amethyst modules
 //=========================
 use amethyst::{
     core::transform::TransformBundle,
@@ -22,15 +22,11 @@ use amethyst::{
     window::{ScreenDimensions, Window, WindowBundle},
 };
 
-//==============================
-// Declare and implement states
-//==============================
-struct MyState;
-
-// Use SimpleState for now.
-impl SimpleState for MyState {
-    fn on_start(&mut self, _data: StateData<'_, GameData<'_, '_>>) {}
-}
+//===============
+// Import states
+//===============
+mod states;
+use crate::states::startup::StartUpState;
 
 //===============
 // main function
@@ -63,9 +59,9 @@ fn main() -> amethyst::Result<()> {
 
     // create an Application "game" 
     // with resource directory "resources_dir", 
-    // the default dummy state "MyState",
+    // instance of the startup state "StartUpState",
     // and the "game_data" just created 
-    let mut game = Application::new(resources_dir, MyState, game_data)?;
+    let mut game = Application::new(resources_dir, StartUpState::new(), game_data)?;
     // run the game,  this will start the game loop
     game.run();
 

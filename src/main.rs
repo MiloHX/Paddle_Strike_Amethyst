@@ -4,9 +4,10 @@
 use amethyst::{
     core::transform::TransformBundle,
     ecs::prelude::{ReadExpect, Resources, SystemData},
+    input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
-        pass::DrawShadedDesc,
+        pass::DrawFlat2DDesc,
         rendy::{
             factory::Factory,
             graph::{
@@ -18,6 +19,7 @@ use amethyst::{
         types::DefaultBackend,
         GraphCreator, RenderingSystem,
     },
+    ui::{DrawUiDesc, UiBundle},
     utils::application_root_dir,
     window::{ScreenDimensions, Window, WindowBundle},
 };
@@ -26,7 +28,8 @@ use amethyst::{
 // Import states
 //===============
 mod states;
-use crate::states::startup::StartUpState;
+use crate::states::loading::LoadingState;
+use crate::states::state_event::{CustomStateEvent, CustomStateEventReader};
 
 //===============
 // main function
@@ -40,28 +43,49 @@ fn main() -> amethyst::Result<()> {
 
     // construct the resources_dir by using app_root + "resources"
     let resources_dir = app_root.join("resources");
+
     // construct the display_config_path by using resources_dir + "display_confg.ron"
     let display_config_path = resources_dir.join("display_config.ron");
 
+    // constrcut the controller configuration path
+    let key_bindings_path = {
+        if cfg!(feature = "sdl_controller") {
+            app_root.join("resources/input_controller.ron")
+        } else {
+            app_root.join("resources/input.ron")
+        }
+    };
+
     // create a default game data with
     // with bundle "windowBundle" which constructed from display_config_path
-    //             The WindowBundle provides all the scaffolding for opening a window
-    // with bundle "TransformBundle" which will add the transform component/system into the game
+    //             
+    // with bundle "TransformBundle" which handles tracking entity positions
     // with thread local "RenderingSystem" with the created default RenderingGraph
-    //             The renderer must be executed on the same thread consecutively, 
+    //             The renderer must be executed on the same thread consecutively,
     //             so we initialize it as thread_local which will always execute on the main thread.
     let game_data = GameDataBuilder::default()
+        // The WindowBundle provides all the scaffolding for opening a window
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
+        // Add the transform bundle which handles tracking entity positions
         .with_bundle(TransformBundle::new())?
+        // UI bundle to handle UI
+        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?)?
+        .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
+        // The renderer must be executed on the same thread consecutively, so we initialize it as thread_local
+        // which will always execute on the main thread.
         .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
             RenderingGraph::default(),
         ));
 
-    // create an Application "game" 
-    // with resource directory "resources_dir", 
-    // instance of the startup state "StartUpState",
-    // and the "game_data" just created 
-    let mut game = Application::new(resources_dir, StartUpState::new(), game_data)?;
+    // create an Application "game"
+    // with resource directory "resources_dir",
+    // instance of the loading state "LoadingState",
+    // and the "game_data" just created
+    // note that use this type of definition is because we are using custom state event.
+    // for default event types the follow way should be used
+    //      let mut game = Application::new(assets_dir, state_name, game_data)?;
+    let mut game: CoreApplication<GameData, CustomStateEvent, CustomStateEventReader> =
+        CoreApplication::build(resources_dir, LoadingState::new())?.build(game_data)?;
     // run the game,  this will start the game loop
     game.run();
 
@@ -73,16 +97,16 @@ fn main() -> amethyst::Result<()> {
 // Define Rendering Graph
 //========================
 //
-// use #[derive(Default)] on a data structure, 
-// the compiler will automatically create a default function for you 
+// use #[derive(Default)] on a data structure,
+// the compiler will automatically create a default function for you
 // that fills each field with its default value. (if the type has Default trait implemented)
 // The default boolean value is false, the default integral value is 0.
 //
 #[derive(Default)]
 struct RenderingGraph {
-    dimensions: Option<ScreenDimensions>,   // windows dimensions for tracking 
-    surface_format: Option<Format>,         // cached surface format
-    dirty: bool,                            // default set to false
+    dimensions: Option<ScreenDimensions>, // windows dimensions for tracking
+    surface_format: Option<Format>,       // cached surface format
+    dirty: bool,                          // default set to false
 }
 
 //=================================
@@ -96,7 +120,7 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
     //
     // This trait method reports to the renderer if the graph must be rebuilt, usually because
     // the window has been resized. This implementation checks the screen size and returns true
-    // if it has changed. 
+    // if it has changed.
     // (Boilerplate code? might be simiplied in later version)
     //
     fn rebuild(&mut self, res: &Resources) -> bool {
@@ -183,25 +207,28 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
             Some(ClearValue::DepthStencil(ClearDepthStencil(1.0, 0))),
         );
 
-        // add a "node" to the graph builder with a pass
-        // store the node ID to "opaque"
-        let opaque = graph_builder.add_node(
+        // Create our first `Subpass`, which contains the DrawFlat2D and DrawUi render groups.
+        // We pass the subpass builder a description of our groups for construction
+        let pass = graph_builder.add_node(
             // creating the render pass using SubpassBuilder
-            // with_group:         create a simple shaded 3D pass
+            // with_group 1:       create a simple 2d pass
+            // with_group 2:       create a UI pass
             // with color:         use the 2d color image just created
             // with depth_stencil: use the default depth stencil just created
             // into_pass() will convert the subpass to a pass
             SubpassBuilder::new()
-                .with_group(DrawShadedDesc::new().builder())
+                .with_group(DrawFlat2DDesc::new().builder()) // Draws sprites
+                .with_group(DrawUiDesc::new().builder())     // Draws UI components
                 .with_color(color)
                 .with_depth_stencil(depth)
                 .into_pass(),
         );
 
-        // complete the graph_builder adding a node after opaque [why?]
+        // Finally, add the pass to the graph.
+        // The PresentNode takes its input and applies it to the surface.
         // use a "unused" variable _present to store the value.
         let _present = graph_builder
-            .add_node(PresentNode::builder(factory, surface, color).with_dependency(opaque));
+            .add_node(PresentNode::builder(factory, surface, color).with_dependency(pass));
 
         // return the graph_builder just contructed
         graph_builder

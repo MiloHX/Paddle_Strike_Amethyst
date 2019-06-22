@@ -1,5 +1,5 @@
 # For current version of amethyst, you have to build the game with --features "vulkan" (in Windowns).
-# To make sure RLS compile amethyst_rendy correctly, please add this line to settings.json:
+# To make sure RLS compile amethyst_rendy correctly, please add this line to settings.json of VSC
 # "rust.features": ["vulkan"]
 
 [package]
@@ -14,7 +14,11 @@ edition = "2018"
 # for example: amethyst ="0.11.0"
 amethyst = { git = "https://github.com/amethyst/amethyst" }
 
+# this is to make use of the #[derive(new)] macro
+derive-new = "0.5"
+
 [features]
+# after 0.11 updated the renderer to rendy, these following features need to be configured here
 empty = ["amethyst/empty"]
 metal = ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]

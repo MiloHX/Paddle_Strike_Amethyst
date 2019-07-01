@@ -12,13 +12,14 @@ edition = "2018"
 # Changed to git url to run with the latest version of amethyst.
 # if you want to run with the release version, change this back to the version number
 # for example: amethyst ="0.11.0"
-amethyst = { git = "https://github.com/amethyst/amethyst" }
+# features = ["vulkan"] is required after 0.11,  or you can type it in command line every time.
+amethyst = { git = "https://github.com/amethyst/amethyst", features = ["vulkan"]}
 
 # this is to make use of the #[derive(new)] macro
 derive-new = "0.5"
 
 [features]
-# after 0.11 updated the renderer to rendy, these following features need to be configured here
-empty = ["amethyst/empty"]
-metal = ["amethyst/metal"]
+# after 0.11 the renderer is updated to rendy, these following features are added
+empty =  ["amethyst/empty"]
+metal =  ["amethyst/metal"]
 vulkan = ["amethyst/vulkan"]

@@ -33,5 +33,11 @@
 // If you aren't using SimpleState or EmptyState, you must implement the update method 
 // to call data.data.update(&mut data.world).
 
-pub mod loading;
-pub mod state_event;
+// declare modules
+mod loading_state;
+mod state_event;    
+
+// move the struts / enums inside the modules into this scope ("states")
+pub use self::loading_state::LoadingState;
+pub use self::state_event::CustomStateEvent;
+pub use self::state_event::CustomStateEventReader;

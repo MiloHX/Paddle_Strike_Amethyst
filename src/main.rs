@@ -1,10 +1,16 @@
+//========================
+// Import general modules
+//========================
+use std::time::Duration;
+
 //=========================
 // Import amethyst modules
 //=========================
 use amethyst::{
-    core::transform::TransformBundle,
+    core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
     ecs::prelude::{ReadExpect, Resources, SystemData},
-    input::{InputBundle, StringBindings},
+    // input::{InputBundle, StringBindings},
+    input::{StringBindings},
     prelude::*,
     renderer::{
         pass::DrawFlat2DDesc,
@@ -17,26 +23,35 @@ use amethyst::{
             hal::{format::Format, image},
         },
         types::DefaultBackend,
-        GraphCreator, RenderingSystem,
+        GraphCreator, RenderingSystem, SpriteSheet
     },
     ui::{DrawUiDesc, UiBundle},
     utils::application_root_dir,
     window::{ScreenDimensions, Window, WindowBundle},
+    assets::Processor,
+    LogLevelFilter
 };
 
-//===============
-// Import states
-//===============
+//======================
+// Import local modules
+//======================
 mod states;
-use crate::states::loading::LoadingState;
-use crate::states::state_event::{CustomStateEvent, CustomStateEventReader};
+mod systems;
+use crate::states::LoadingState;
+use crate::states::{CustomStateEvent, CustomStateEventReader};
 
 //===============
 // main function
 //===============
 fn main() -> amethyst::Result<()> {
-    // start the logger
-    amethyst::start_logger(Default::default());
+    // start the logger with less vulkan related junks and
+    // please use amethyst:start_logger(Default::default()) instead if vulkan is shut up in the future
+    amethyst::Logger::from_config(amethyst::LoggerConfig {
+        level_filter: LogLevelFilter::Info,
+        ..Default::default()
+    })
+    .level_for("gfx_backend_vulkan", LogLevelFilter::Warn)
+    .start();
 
     // save the application root to app_root
     let app_root = application_root_dir()?;
@@ -48,17 +63,17 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = resources_dir.join("display_config.ron");
 
     // constrcut the controller configuration path
-    let key_bindings_path = {
-        if cfg!(feature = "sdl_controller") {
-            app_root.join("resources/input_controller.ron")
-        } else {
-            app_root.join("resources/input.ron")
-        }
-    };
+    // let key_bindings_path = {
+    //     if cfg!(feature = "sdl_controller") {
+    //         app_root.join("resources/input_controller.ron")
+    //     } else {
+    //         app_root.join("resources/input.ron")
+    //     }
+    // };
 
     // create a default game data with
     // with bundle "windowBundle" which constructed from display_config_path
-    //             
+    //
     // with bundle "TransformBundle" which handles tracking entity positions
     // with thread local "RenderingSystem" with the created default RenderingGraph
     //             The renderer must be executed on the same thread consecutively,
@@ -68,9 +83,21 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
         // Add the transform bundle which handles tracking entity positions
         .with_bundle(TransformBundle::new())?
+        // Input bundle to hanlde input, wkth the key binding configuratioin
+        // .with_bundle(
+        //     InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?,
+        // )?
         // UI bundle to handle UI
-        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?)?
         .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
+        // Add user defined systems
+        .with(systems::LoadingSystem, "loading_system", &[])
+        // Sprite sheet processor have to be loaded when DrawFlat2DDesc pass is used,
+        // or the program will panic "Tried to fetch a resource, but the resource does not exist."
+        .with(
+            Processor::<SpriteSheet>::new(),
+            "sprite_sheet_processor",
+            &[],
+        )
         // The renderer must be executed on the same thread consecutively, so we initialize it as thread_local
         // which will always execute on the main thread.
         .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
@@ -85,7 +112,13 @@ fn main() -> amethyst::Result<()> {
     // for default event types the follow way should be used
     //      let mut game = Application::new(assets_dir, state_name, game_data)?;
     let mut game: CoreApplication<GameData, CustomStateEvent, CustomStateEventReader> =
-        CoreApplication::build(resources_dir, LoadingState::new())?.build(game_data)?;
+        CoreApplication::build(resources_dir, LoadingState::new())?
+            .with_frame_limit(
+                FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
+                60,
+            )
+            .build(game_data)?;
+
     // run the game,  this will start the game loop
     game.run();
 
@@ -218,7 +251,7 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
             // into_pass() will convert the subpass to a pass
             SubpassBuilder::new()
                 .with_group(DrawFlat2DDesc::new().builder()) // Draws sprites
-                .with_group(DrawUiDesc::new().builder())     // Draws UI components
+                .with_group(DrawUiDesc::new().builder()) // Draws UI components
                 .with_color(color)
                 .with_depth_stencil(depth)
                 .into_pass(),

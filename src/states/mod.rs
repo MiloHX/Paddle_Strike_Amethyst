@@ -35,9 +35,11 @@
 
 // declare modules
 mod loading_state;
+mod disclaimer_state;
 mod state_event;    
 
 // move the struts / enums inside the modules into this scope ("states")
 pub use self::loading_state::LoadingState;
+pub use self::disclaimer_state::DisclaimerState;
 pub use self::state_event::CustomStateEvent;
 pub use self::state_event::CustomStateEventReader;

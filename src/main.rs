@@ -37,6 +37,7 @@ use amethyst::{
 //======================
 mod states;
 mod systems;
+mod components;
 use crate::states::LoadingState;
 use crate::states::{CustomStateEvent, CustomStateEventReader};
 
@@ -90,7 +91,7 @@ fn main() -> amethyst::Result<()> {
         // UI bundle to handle UI
         .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
         // Add user defined systems
-        .with(systems::LoadingSystem, "loading_system", &[])
+        .with(systems::UiFlashingSystem, "text_flashing_system", &[])
         // Sprite sheet processor have to be loaded when DrawFlat2DDesc pass is used,
         // or the program will panic "Tried to fetch a resource, but the resource does not exist."
         .with(
@@ -112,7 +113,7 @@ fn main() -> amethyst::Result<()> {
     // for default event types the follow way should be used
     //      let mut game = Application::new(assets_dir, state_name, game_data)?;
     let mut game: CoreApplication<GameData, CustomStateEvent, CustomStateEventReader> =
-        CoreApplication::build(resources_dir, LoadingState::new())?
+        CoreApplication::build(resources_dir, LoadingState::default())?
             .with_frame_limit(
                 FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
                 60,

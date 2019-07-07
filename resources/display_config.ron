@@ -1,4 +1,72 @@
 (
+  // Name of the application window.
   title: "Paddle Strike!",
+
+  // Enables fullscreen mode on specific monitor when set.
+  // Defaults to `None`, which means fullscreen is off.
+  fullscreen: None,
+
+  // Current window dimensions, measured in pixels (px).
   dimensions: Some((640, 480)),
+
+  // Minimum ad Maximum window dimensions, measured in pixels (px).
+  min_dimensions: Some((640, 480)),
+  max_dimensions: None,
+
+  // Whether the window should be immediately visible upon creation.
+  visibility: true,
+
+  // A path to the icon used for the window.
+  // If `loaded_icon` is present, this will be ignored.
+  icon: Some("resources/assets/imgs/icon.png"),
+
+  // Whether the window should always be on top of other windows.
+  always_on_top: false,
+
+  // Whether the window should have borders and bars.
+  decorations: true,
+
+  // Whether the window should be maximized upon creation.
+  maximized: false,
+
+  // Enable multitouch on iOS.
+  multitouch: false,
+
+  // Whether the window is resizable or not.
+  resizable: false,
+
+  // Whether the the window should be transparent. If this is true, writing
+  // colors with alpha values different than 1.0 will produce a transparent
+  // window.
+  transparent: false,
+
+  // A programmatically loaded window icon; not present in serialization.
+  // Takes precedence over `icon`.
+  //
+  // Examples:
+  //        use amethyst_window::{DisplayConfig, Icon};
+  //
+  //    // First, create your `DisplayConfig` as usual
+  //        let mut config = DisplayConfig::default(); // or load from file
+  //
+  //    // Create the icon data
+  //        let mut icon = Vec::new();
+  //        for _ in 0..(128 * 128) {
+  //            icon.extend(vec![255, 0, 0, 255]);
+  //        }
+  //
+  //    // Set the `loaded_icon` field of the config
+  //    // It will now be used as the window icon
+  //       config.loaded_icon = Some(Icon::from_rgba(icon, 128, 128).unwrap());
+  //
+  //    // Now, feed this into the GameDataBuilder using
+  //       .with_bundle(WindowBundle::from_config(config))
+  // 
+  loaded_icon: None,
+
+  // (lack of documentation)
+  multisampling: 0.,
+
+  // V-sync enable or not (lack of documentation)
+  vsync: true
 )

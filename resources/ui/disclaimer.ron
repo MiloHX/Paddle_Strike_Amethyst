@@ -1,0 +1,193 @@
+// change the fields to option
+#![enable(implicit_some)]
+
+//=========================
+// background UI Container
+//=========================
+Container (
+
+    // transform attributes of the background container
+    transform: (
+        // An identifier. Serves no purpose other than to help you distinguish between UI elements.
+        id: "background",
+
+        // Indicates where the element sits, relative to the parent (or to the screen, if there is no parent)
+        // TopLeft    | TopMiddle    | TopRight 
+        //------------+--------------+------------
+        // MiddleLeft | Middle       | MiddleRight
+        //------------+--------------+------------
+        // BottomLeft | BottomMiddle | BottomRight
+        anchor: Middle,
+
+        // Indicates where the element sits, relative to itself
+        pivot: Middle,
+
+        // If a child ui element needs to fill its parent
+        // this can be used to stretch it to the appropriate size.
+        //     NoStretch    - No stretching occurs
+        //     X {x_margin} - Stretches on the X axis.
+        //     Y {y_margin} - Stretches on the Y axis.
+        //     XY{x_margin, y_margin, keep_aspect_ratio} - Stretches on both axes.
+        //         Note that if keep_aspect_ratio = true, 
+        //         Amethyst will keep the aspect ratio by adding more margin to one axis when necessary
+        stretch: XY( x_margin: 0., y_margin: 0., keep_aspect_ratio: false),
+
+        // X/Y coordinate, 0 is the left/bottom edge of the screen. 
+        // If scale_mode is set to pixel then the width of the screen in pixel is the right/top edge. 
+        // If scale_mode is percent then the right/top edge is 1.
+        local_x: 0.,
+        local_y: 0.,
+
+        // Z order, entities with a higher Z order will be rendered 
+        // on top of entities with a lower Z order.
+        local_z: 0.,
+
+        // The width/height of this UI element.
+        width:  20.,
+        height: 20.,
+
+        // The scale mode indicates if the position is in pixel or is relative (%) to the parent's size.
+        // Pixel | Percent
+        scale_mode: Pixel,
+
+        // Indicates if actions on the ui can go through this element.
+        // If set to false, the element will behaves as if it was transparent and will let events go to
+        // the next element (for example, the text on a button).
+        opaque: false,
+
+    ),
+
+    // background attribute
+    background: SolidColor(0.0, 0.0, 0.0, 1.0),
+
+    // define childrens inside the root background container
+    children: [
+
+        Container (
+            transform: (
+                id:     "disclaimer_root",
+                anchor: Middle
+            ),
+
+            children: [
+                // actual disclaimer here used a label with children labels
+                // the reason that multiple lines text is not used here
+                // is that there is no way to set line spacing (yet)
+                Label(
+
+                    // transform of the disclaimer
+                    transform: (
+                        id: "disclaimer_line_1",
+
+                        // label X/Y coordinate
+                        x: 0.,
+                        y: 300.,
+
+                        // label width and height
+                        width: 1200.,
+                        height: 70.,
+
+                        // for button tab order (?), default is 9
+                        tab_order: 1,
+
+                        // anchor
+                        anchor: Middle
+                    ),
+
+                    // actual text of the disclaimer
+                    text: (
+                        // The string rendered by this.
+                        text: "This game is created for learning and",
+
+                        // The font used for rendering.
+                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+
+                        // The height of a line of text in pixels.
+                        font_size: 67.,
+
+                        // The color of the rendered text, using a range of 0.0 to 1.0 per channel.
+                        color: (0.8, 0.8, 0.8, 1.0),
+
+                        // If true this will be rendered as dots instead of the text.
+                        password: false,
+
+                        // How lines should behave when they are longer than the maximum line length.
+                        // Single | Wrap
+                        line_mode: Single,
+
+                        // How to align the text within its `UiTransform`.
+                        align: TopLeft
+                    )
+                ),
+                Label(
+                    transform: (
+                        id: "disclaimer_line_2",
+                        x: 0.,
+                        y: 180.,
+                        width: 1200.,
+                        height: 70.,
+                        anchor: TopLeft
+                    ),
+                    text: (
+                        text: "testing purpose. It is not intended",
+                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+                        font_size: 67.,
+                        color: (0.8, 0.8, 0.8, 1.0),
+                        align: TopLeft
+                    )
+                ),   
+                Label(
+                    transform: (
+                        id: "disclaimer_line_3",
+                        x: 0.,
+                        y: 60.,
+                        width: 1200.,
+                        height: 70.,
+                        anchor: TopLeft
+                    ),
+                    text: (
+                        text: "to be used comercially.",
+                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+                        font_size: 67.,
+                        color: (0.8, 0.8, 0.8, 1.0),
+                        align: TopLeft
+                    )
+                ),     
+                Label(
+                    transform: (
+                        id: "disclaimer_line_4",
+                        x: 0.,
+                        y: -100.,
+                        width: 1200.,
+                        height: 70.,
+                        anchor: TopLeft
+                    ),
+                    text: (
+                        text: "2019, MILO H XU",
+                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+                        font_size: 67.,
+                        color: (0.8, 0.8, 0.8, 1.0),
+                        align: TopRight
+                    )
+                ),
+                Label(
+                    transform: (
+                        id: "disclaimer_line_5",
+                        x: 0.,
+                        y: -300.,
+                        width: 1200.,
+                        height: 70.,
+                        anchor: TopLeft,
+                    ),
+                    text: (
+                        text: "PRESS ENTER TO CONTINUE",
+                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+                        font_size: 67.,
+                        color: (0.8, 0.8, 0.8, 1.0),
+                        align: TopMiddle
+                    )
+                ) 
+            ]    
+        )
+    ]
+)

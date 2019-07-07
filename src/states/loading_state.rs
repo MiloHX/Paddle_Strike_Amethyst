@@ -4,25 +4,17 @@
 use amethyst::{
     prelude::*,
     assets::{
-        ProgressCounter,
-        Loader
+        Completion, 
+        ProgressCounter
     },
-    ui::{
-        TtfFormat,
-        UiTransform,
-        Anchor,
-        UiText
-    }
+    ui::{UiCreator, UiFinder},
 };
 
 //======================
-// Import other modules
+// Import local modules
 //======================
-use derive_new::new;    // for [#derive(new)]. "derive-new: (latest ver)" need to be added to Cargo.toml
-
-//========================
-// Import custom modules
-//========================
+use crate::components::FlashingComp;
+use super::disclaimer_state::DisclaimerState;
 use super::state_event::CustomStateEvent;
 
 //=======================
@@ -31,81 +23,84 @@ use super::state_event::CustomStateEvent;
 //
 // Note that if it is not a unit struct (with no fields)
 // you cannot directly use it as the parameter of the Application::new() function
-// a seperate method (here we use [derive(new)])to return an instance (Self) need to be used
-//
-// A #[derive(new)] attribute creates a new constructor function for the annotated type.
-// That function takes an argument for each field in the type giving a trivial constructor.
-// This is useful since as your type evolves you can make the constructor non-trivial
-// (and add or remove fields) without changing client code (i.e., without breaking backwards compatibility).
-// It is also the most succinct way to initialise a struct or an enum.
-#[derive(new)]
+// a seperate method (here we use default())to return an instance (Self) need to be used
 pub struct LoadingState {
     // Tracks loaded assets.
-    #[new(default)]
-    prefab_loading_progress: Option<ProgressCounter>
+    // Here we use an Option to allow "None" for this field.
+    loading_progress: Option<ProgressCounter>,
+}
+
+//=========================
+// Implement Default trait
+//=========================
+impl Default for LoadingState {
+    // Define how to return when default() is called
+    fn default() -> Self {
+        LoadingState {
+            loading_progress: Some(ProgressCounter::new()),
+        }
+    }
 }
 //=======================
 // Implement State trait
 //=======================
 impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
-    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        self.prefab_loading_progress = None;
 
-        //-----------------------
-        // Initialize disclaimer
-        //-----------------------
-        initialize_disclaimer(data.world);
+    //----------------
+    // Start up tasks
+    //----------------
+    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+
+        // initialize disclaimer with a ron file.
+        // here we need to handle Some and None case of the loading_progress
+        if let Some(counter) = &mut self.loading_progress {
+            // Make use of UiCreator to create the UI defined in disclaimer.ron
+            data.world.exec(|mut creator: UiCreator<'_>| {
+                creator.create("ui/disclaimer.ron", counter);
+            });
+        } else {
+            // None handling
+            println!("The loading progress counter is not created correctly! UI loading aborted");
+        }
+
     }
 
+    //--------------
+    // Update tasks 
+    //--------------
+    //
+    // Note that this will be called repeatly until transite to other state
     fn update(&mut self, data: StateData<'_, GameData<'a, 'a>>)-> Trans<GameData<'a, 'a>, CustomStateEvent> {
+
+        // update game data
         data.data.update(&data.world);
+
+        // here will get the counter as a reference
+        if let Some(ref counter) = self.loading_progress.as_ref() {
+            match counter.complete() {
+                Completion::Loading  => {
+                    println!("======= Loading Ongoing   =======");
+                }
+                Completion::Failed   => {
+                    println!("======= Loading Failed    =======");
+                }
+                Completion::Complete => {
+                    println!("======= Loading Completed =======");
+                    // clear the counter
+                    self.loading_progress = None;
+                    if let Some(line_5) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                        ui_finder.find("disclaimer_line_5")
+                    }) {
+                        let mut flasging_comp_write_storage = data.world.write_storage::<FlashingComp>();
+                        let _insert_result = flasging_comp_write_storage.insert(line_5, FlashingComp::default());
+                    }
+                    println!("======= Switch State      =======");
+                    return Trans::Switch(Box::new(DisclaimerState::default()));
+                }
+            }
+        } 
+        
         Trans::None
     }
 
-}
-
-//=======================
-// initialize disclaimer 
-//=======================
-//
-// Doing this manually for testing, but it should be configured using
-// the UI features of Amethyst using .ron file.
-fn initialize_disclaimer(world: &mut World) {
-    // load font. Note that "load" method is returning a undefined type,
-    // you have to use variable "font" later to let the rust compiler to infer it,
-    // unless you explicitly give a return type for "load".
-    // make sure the UiBundle is added to the game data and DrawUiDesc is added to the graph,
-    // or the program will panic "Tried to fetch a resource, but the resource does not exist."
-    let font = world.read_resource::<Loader>().load(
-        "assets/fonts/square.ttf",
-        TtfFormat,
-        (),
-        &world.read_resource()
-    );
-
-    // create a transform comoponent for the disclaimer
-    let disclaimer_transform = UiTransform::new(
-        "disclaimer".to_string(),
-        Anchor::TopMiddle,
-        Anchor::TopMiddle,
-        0.,
-        0.,
-        1.,
-        600.,
-        200.,
-    );
-
-    // create a ui text comoponent for the disclaimer
-    let disclaimer_ui_text = UiText::new(
-        font.clone(),
-        "This is the disclaimer!".to_string(),
-        [1.0, 1.0, 1.0, 1.0],
-        50.,
-    );
-
-    // combine the stuff into a disclaimer entity
-    world.create_entity()
-        .with(disclaimer_transform)
-        .with(disclaimer_ui_text)
-        .build();
 }

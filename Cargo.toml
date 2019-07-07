@@ -15,8 +15,8 @@ edition = "2018"
 # features = ["vulkan"] is required after 0.11,  or you can type it in command line every time.
 amethyst = { git = "https://github.com/amethyst/amethyst", features = ["vulkan"]}
 
-# this is to make use of the #[derive(new)] macro
-derive-new = "0.5"
+# uncomment this to make use of the #[derive(new)] macro
+# derive-new = "0.5"
 
 [features]
 # after 0.11 the renderer is updated to rendy, these following features are added

@@ -10,7 +10,7 @@
 //
 
 // declare modules
-mod loading_system;
+mod ui_flashing_system;
 
 // move the struts / enums inside the modules into this scope ("systems")
-pub use self::loading_system::LoadingSystem;
+pub use self::ui_flashing_system::UiFlashingSystem;

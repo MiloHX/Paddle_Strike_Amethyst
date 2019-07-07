@@ -1,5 +1,6 @@
 # Unwanted files
 .vscode
+.cargo-ok
 target
 
 # Backup files

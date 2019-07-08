@@ -8,7 +8,7 @@ use amethyst::{
 //======================
 // Import local modules
 //======================
-use super::state_event::CustomStateEvent;
+use crate::states::state_event::CustomStateEvent;
 
 //==========================
 // Declare disclaimer state

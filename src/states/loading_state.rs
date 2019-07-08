@@ -5,17 +5,21 @@ use amethyst::{
     prelude::*,
     assets::{
         Completion, 
-        ProgressCounter
+        ProgressCounter,
     },
-    ui::{UiCreator, UiFinder},
+    ui::{
+        UiCreator, 
+        UiFinder, 
+        UiText,
+    },
 };
 
 //======================
 // Import local modules
 //======================
 use crate::components::FlashingComp;
-use super::disclaimer_state::DisclaimerState;
-use super::state_event::CustomStateEvent;
+use crate::states::disclaimer_state::DisclaimerState;
+use crate::states::state_event::CustomStateEvent;
 
 //=======================
 // Declare loading state
@@ -79,7 +83,7 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
         if let Some(ref counter) = self.loading_progress.as_ref() {
             match counter.complete() {
                 Completion::Loading  => {
-                    println!("======= Loading Ongoing   =======");
+                    // onging
                 }
                 Completion::Failed   => {
                     println!("======= Loading Failed    =======");
@@ -88,11 +92,18 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
                     println!("======= Loading Completed =======");
                     // clear the counter
                     self.loading_progress = None;
-                    if let Some(line_5) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                        ui_finder.find("disclaimer_line_5")
+                    // use UiFinder to get the helper message entity
+                    // then attach a flashing component to it
+                    if let Some(helper_message) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                        ui_finder.find("disclaimer_helper")
                     }) {
-                        let mut flasging_comp_write_storage = data.world.write_storage::<FlashingComp>();
-                        let _insert_result = flasging_comp_write_storage.insert(line_5, FlashingComp::default());
+                        // get the UiText color
+                        let uitext_storage = data.world.read_storage::<UiText>();
+                        let text_color = uitext_storage.get(helper_message).unwrap().color;
+                        
+                        // add flashing component to the text
+                        let mut flashing_comp_write_storage = data.world.write_storage::<FlashingComp>();
+                        let _insert_result = flashing_comp_write_storage.insert(helper_message, FlashingComp::new(text_color));
                     }
                     println!("======= Switch State      =======");
                     return Trans::Switch(Box::new(DisclaimerState::default()));

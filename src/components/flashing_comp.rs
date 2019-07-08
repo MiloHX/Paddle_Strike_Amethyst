@@ -1,22 +1,34 @@
 use amethyst::{
-    ecs::{Component, VecStorage},
+    ecs::{Component, DenseVecStorage},
 };
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct FlashingComp {
-    pub orginal_color:  [f32; 4],   // Saved original color of the text
-    pub is_flashing:    bool,       // control if the text is flashing or not
-    pub rate:           f32,        // flashing rate (default is 1.0)
-    pub intensity:      f32,        // flashing intensity (from 0.0 to 1.0, default is 0.4)
+    pub orginal_color:  [f32; 4],       // Saved original color of the text
+    pub is_flashing:    bool,           // control if the text is flashing or not
+    pub rate:           f32,            // flashing rate (default is 1.0)
+    pub intensity:      f32,            // flashing intensity (from 0.0 to 2.0, default is 0.4)
+    pub style:          FlashingStyle,  // flashing style
+    pub rgba_factors:   [f32; 4],       // rgba channel factors
+}
+
+#[derive(Clone)]
+#[allow(dead_code)]
+pub enum FlashingStyle {
+    TwoWays,
+    Lightening,
+    Darkening,
 }
 
 impl FlashingComp {
-    pub fn new(text_color: [f32; 4]) -> Self {
+    pub fn new(orginal_color: [f32; 4], is_flashing:bool, rate:f32, intensity:f32, style:FlashingStyle, rgba_factors: [f32; 4]) -> Self {
         FlashingComp {
-            orginal_color:  text_color,
-            is_flashing:    true,
-            rate:           1.,
-            intensity:      0.4,
+            orginal_color,
+            is_flashing,
+            rate,
+            intensity,
+            style,
+            rgba_factors,   
         }
     }
 }
@@ -28,10 +40,12 @@ impl Default for FlashingComp {
             is_flashing:    true,
             rate:           1.,
             intensity:      0.4,
+            style:          FlashingStyle::TwoWays,
+            rgba_factors:   [1., 1., 1., 0.,],
         }
     }
 }
 
 impl Component for FlashingComp {
-    type Storage = VecStorage<Self>;
+    type Storage = DenseVecStorage<Self>;
 }

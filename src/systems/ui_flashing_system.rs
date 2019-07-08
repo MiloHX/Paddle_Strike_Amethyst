@@ -11,6 +11,7 @@ use amethyst::{
 // Import local modules
 //======================
 use crate::components::FlashingComp;
+use crate::components::FlashingStyle;
 
 //==============================
 // Declare Text Flashing System
@@ -36,18 +37,33 @@ impl<'s> System<'s> for UiFlashingSystem {
         for (text, flashing_item,) in (&mut texts, &flashing_items,).join() {
             // flashing is enabled
             if flashing_item.is_flashing {
-                // calculate the flashing factor based on the rate and intensity setting
-                let factor: f32 = (
-                    sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
-                ).sin() * flashing_item.intensity;
+                let factor: f32;
+                // calculate the flashing factor based on the rate, intensity and style setting
+                match flashing_item.style {
+                    FlashingStyle::TwoWays => {
+                        factor = (
+                            sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
+                        ).sin() * 0.5 * flashing_item.intensity;
+                    }
+                    FlashingStyle::Lightening => {
+                        factor = (
+                            (sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
+                        ).sin() + 1.) * 0.5 * flashing_item.intensity;                        
+                    }
+                    FlashingStyle::Darkening => {
+                        factor = (
+                            (sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
+                        ).sin() - 1.) * 0.5 * flashing_item.intensity;                        
+                    }
+                }
                 // update text color
                 text.color = [
-                    (flashing_item.orginal_color[0] + factor).min(1.).max(0.),  // R
-                    (flashing_item.orginal_color[1] + factor).min(1.).max(0.),  // G
-                    (flashing_item.orginal_color[2] + factor).min(1.).max(0.),  // B
-                     flashing_item.orginal_color[3],                            // A
+                    (flashing_item.orginal_color[0] + factor * flashing_item.rgba_factors[0]).min(1.).max(0.),  // R
+                    (flashing_item.orginal_color[1] + factor * flashing_item.rgba_factors[1]).min(1.).max(0.),  // G
+                    (flashing_item.orginal_color[2] + factor * flashing_item.rgba_factors[2]).min(1.).max(0.),  // B
+                    (flashing_item.orginal_color[3] + factor * flashing_item.rgba_factors[3]).min(1.).max(0.),  // A
                 ];
-
+            
             // flashing is disabled
             } else {
                 // Use original color 

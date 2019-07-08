@@ -13,3 +13,4 @@ mod flashing_comp;
 
 // move the struts / enums inside the modules into this scope ("components")
 pub use self::flashing_comp::FlashingComp;
+pub use self::flashing_comp::FlashingStyle;

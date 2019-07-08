@@ -18,6 +18,7 @@ use amethyst::{
 // Import local modules
 //======================
 use crate::components::FlashingComp;
+use crate::components::FlashingStyle;
 use crate::states::disclaimer_state::DisclaimerState;
 use crate::states::state_event::CustomStateEvent;
 
@@ -73,7 +74,7 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
     // Update tasks 
     //--------------
     //
-    // Note that this will be called repeatly until transite to other state
+    // This will be called repeatly until the transition to other state
     fn update(&mut self, data: StateData<'_, GameData<'a, 'a>>)-> Trans<GameData<'a, 'a>, CustomStateEvent> {
 
         // update game data
@@ -83,7 +84,7 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
         if let Some(ref counter) = self.loading_progress.as_ref() {
             match counter.complete() {
                 Completion::Loading  => {
-                    // onging
+                    // loading onging
                 }
                 Completion::Failed   => {
                     println!("======= Loading Failed    =======");
@@ -101,9 +102,12 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
                         let uitext_storage = data.world.read_storage::<UiText>();
                         let text_color = uitext_storage.get(helper_message).unwrap().color;
                         
-                        // add flashing component to the text
+                        // add flashing component to the helper text
                         let mut flashing_comp_write_storage = data.world.write_storage::<FlashingComp>();
-                        let _insert_result = flashing_comp_write_storage.insert(helper_message, FlashingComp::new(text_color));
+                        let _insert_result = flashing_comp_write_storage.insert(
+                            helper_message, 
+                            FlashingComp::new(text_color, true, 1., 0.8, FlashingStyle::Darkening, [1., 1., 0., 0.]),
+                        );
                     }
                     println!("======= Switch State      =======");
                     return Trans::Switch(Box::new(DisclaimerState::default()));

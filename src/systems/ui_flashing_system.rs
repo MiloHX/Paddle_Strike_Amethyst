@@ -1,26 +1,23 @@
-//=========================
-// Import amethyst modules
-//=========================
+//================
+// Import modules
+//================
+
+// amethyst modules
 use amethyst::{
     core::timing::Time,
     ecs::prelude::{Join, Read, System, WriteStorage, ReadStorage},
     ui::UiText,
 };
 
-//======================
-// Import local modules
-//======================
+// local modules
 use crate::components::FlashingComp;
 use crate::components::FlashingStyle;
 
-//==============================
-// Declare Text Flashing System
-//==============================
+//======================
+// Text Flashing System
+//======================
 pub struct UiFlashingSystem;
 
-//========================
-// Implement System trait
-//========================
 impl<'s> System<'s> for UiFlashingSystem {
     // define what data to be retreived from the storage
     type SystemData = (

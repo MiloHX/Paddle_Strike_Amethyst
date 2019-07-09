@@ -53,12 +53,12 @@ Container (
         // Indicates if actions on the ui can go through this element.
         // If set to false, the element will behaves as if it was transparent and will let events go to
         // the next element (for example, the text on a button).
-        opaque: false,
+        opaque: true,
 
     ),
 
     // background attribute
-    background: SolidColor(0.0, 0.0, 0.0, 1.0),
+    background: SolidColor(0.0, 0.0, 0.0, 1.),
 
     // define childrens inside the root background container
     children: [
@@ -100,13 +100,13 @@ Container (
                         text: "This game is created for learning and",
 
                         // The font used for rendering.
-                        font: File("assets/fonts/square.ttf", ("TTF", ())),
+                        font: File("assets/fonts/players.ttf", ("TTF", ())),
 
                         // The height of a line of text in pixels.
-                        font_size: 67.,
+                        font_size: 56.,
 
                         // The color of the rendered text, using a range of 0.0 to 1.0 per channel.
-                        color: (0.8, 0.8, 0.8, 1.0),
+                        color: (0.8, 0.8, 0.8, 1.),
 
                         // If true this will be rendered as dots instead of the text.
                         password: false,
@@ -130,9 +130,9 @@ Container (
                     ),
                     text: (
                         text: "testing purpose. It is not intended",
-                        font: File("assets/fonts/square.ttf", ("TTF", ())),
-                        font_size: 67.,
-                        color: (0.8, 0.8, 0.8, 1.0),
+                        font: File("assets/fonts/players.ttf", ("TTF", ())),
+                        font_size: 56.,
+                        color: (0.8, 0.8, 0.8, 1.),
                         align: TopLeft
                     )
                 ),   
@@ -147,9 +147,9 @@ Container (
                     ),
                     text: (
                         text: "to be used comercially.",
-                        font: File("assets/fonts/square.ttf", ("TTF", ())),
-                        font_size: 67.,
-                        color: (0.8, 0.8, 0.8, 1.0),
+                        font: File("assets/fonts/players.ttf", ("TTF", ())),
+                        font_size: 56.,
+                        color: (0.8, 0.8, 0.8, 1.),
                         align: TopLeft
                     )
                 ),     
@@ -164,9 +164,9 @@ Container (
                     ),
                     text: (
                         text: "2019, MILO H XU",
-                        font: File("assets/fonts/square.ttf", ("TTF", ())),
-                        font_size: 67.,
-                        color: (0.8, 0.8, 0.8, 1.0),
+                        font: File("assets/fonts/players.ttf", ("TTF", ())),
+                        font_size: 56.,
+                        color: (0.8, 0.8, 0.8, 1.),
                         align: TopRight
                     )
                 ),
@@ -181,9 +181,9 @@ Container (
                     ),
                     text: (
                         text: "PRESS ENTER TO CONTINUE",
-                        font: File("assets/fonts/square.ttf", ("TTF", ())),
-                        font_size: 67.,
-                        color: (1., 1., 0.0, 1.0),
+                        font: File("assets/fonts/players.ttf", ("TTF", ())),
+                        font_size: 56.,
+                        color: (1., 1., 0., 1.),
                         align: TopMiddle
                     )
                 ) 

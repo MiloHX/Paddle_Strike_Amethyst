@@ -1,7 +1,26 @@
+//================
+// Import modules
+//================
+
+// amethyst modules
 use amethyst::{
     ecs::{Component, DenseVecStorage},
 };
 
+//================
+// Flashing Style
+//================
+#[derive(Clone)]
+#[allow(dead_code)]
+pub enum FlashingStyle {
+    TwoWays,        // color get lightened and darkened
+    Lightening,     // color only get lightened
+    Darkening,      // color only get darkened
+}
+
+//================
+// Flashing Style
+//================
 #[derive(Clone)]
 pub struct FlashingComp {
     pub orginal_color:  [f32; 4],       // Saved original color of the text
@@ -12,16 +31,15 @@ pub struct FlashingComp {
     pub rgba_factors:   [f32; 4],       // rgba channel factors
 }
 
-#[derive(Clone)]
-#[allow(dead_code)]
-pub enum FlashingStyle {
-    TwoWays,
-    Lightening,
-    Darkening,
-}
-
 impl FlashingComp {
-    pub fn new(orginal_color: [f32; 4], is_flashing:bool, rate:f32, intensity:f32, style:FlashingStyle, rgba_factors: [f32; 4]) -> Self {
+    pub fn new(
+        orginal_color:  [f32; 4], 
+        is_flashing:    bool, 
+        rate:           f32, 
+        intensity:      f32, 
+        style:          FlashingStyle, 
+        rgba_factors:   [f32; 4],
+    ) -> Self {
         FlashingComp {
             orginal_color,
             is_flashing,
@@ -33,6 +51,7 @@ impl FlashingComp {
     }
 }
 
+// default values
 impl Default for FlashingComp {
     fn default() -> Self {
         FlashingComp {
@@ -46,6 +65,7 @@ impl Default for FlashingComp {
     }
 }
 
+// make it component
 impl Component for FlashingComp {
     type Storage = DenseVecStorage<Self>;
 }

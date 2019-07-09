@@ -1,16 +1,19 @@
-//========================
-// Import general modules
-//========================
+//================
+// Import modules
+//================
+
+// external macros
+#[macro_use]
+extern crate log;
+
+// general modules
 use std::time::Duration;
 
-//=========================
-// Import amethyst modules
-//=========================
+// amethyst modules
 use amethyst::{
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
     ecs::prelude::{ReadExpect, Resources, SystemData},
-    // input::{InputBundle, StringBindings},
-    input::{StringBindings},
+    input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
         pass::DrawFlat2DDesc,
@@ -64,13 +67,13 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = resources_dir.join("display_config.ron");
 
     // constrcut the controller configuration path
-    // let key_bindings_path = {
-    //     if cfg!(feature = "sdl_controller") {
-    //         app_root.join("resources/input_controller.ron")
-    //     } else {
-    //         app_root.join("resources/input.ron")
-    //     }
-    // };
+    let key_bindings_path = {
+        if cfg!(feature = "sdl_controller") {
+            app_root.join("resources/input_controller.ron")
+        } else {
+            app_root.join("resources/input.ron")
+        }
+    };
 
     // create a default game data with
     // with bundle "windowBundle" which constructed from display_config_path
@@ -85,9 +88,9 @@ fn main() -> amethyst::Result<()> {
         // Add the transform bundle which handles tracking entity positions
         .with_bundle(TransformBundle::new())?
         // Input bundle to hanlde input, wkth the key binding configuratioin
-        // .with_bundle(
-        //     InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?,
-        // )?
+        .with_bundle(
+            InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?,
+        )?
         // UI bundle to handle UI
         .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
         // Add user defined systems
@@ -252,7 +255,7 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
             // into_pass() will convert the subpass to a pass
             SubpassBuilder::new()
                 .with_group(DrawFlat2DDesc::new().builder()) // Draws sprites
-                .with_group(DrawUiDesc::new().builder()) // Draws UI components
+                .with_group(DrawUiDesc::new().builder())     // Draws UI components
                 .with_color(color)
                 .with_depth_stencil(depth)
                 .into_pass(),

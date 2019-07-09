@@ -5,7 +5,7 @@
 [package]
 name = "paddle_strike_amethyst"
 version = "0.1.0"
-authors = ["Milo Hao XU (milo.h.xu@icloud.com)"]
+authors = ["Milo Hao XU (milo.h.xu@icloud.com)",]
 edition = "2018"
 
 [dependencies]
@@ -14,13 +14,18 @@ edition = "2018"
 # for example: amethyst ="0.11.0"
 # features = ["vulkan"] is required after 0.11,  or you can type it in command line every time.
 # features = ["no-slow-safety-checks"] is added to remove the rendy warning.
-amethyst = { git = "https://github.com/amethyst/amethyst", features = ["vulkan", "no-slow-safety-checks"]}
+amethyst = { git = "https://github.com/amethyst/amethyst", features = ["vulkan", "no-slow-safety-checks",]}
 
 # uncomment this to make use of the #[derive(new)] macro
 # derive-new = "0.5"
 
+# uncomment this to make use of the log related macro (info! etc)
+log = "0.4"
+
 [features]
 # after 0.11 the renderer is updated to rendy, these following features are added
-empty =  ["amethyst/empty"]
-metal =  ["amethyst/metal"]
-vulkan = ["amethyst/vulkan"]
+empty =  ["amethyst/empty",]
+metal =  ["amethyst/metal",]
+vulkan = ["amethyst/vulkan",]
+no-slow-safety-checks = ["amethyst/no-slow-safety-checks",]
+shader-compiler =  ["amethyst/shader-compiler",]

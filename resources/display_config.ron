@@ -18,7 +18,7 @@
 
   // A path to the icon used for the window.
   // If `loaded_icon` is present, this will be ignored.
-  icon: Some("resources/assets/imgs/icon.png"),
+  icon: Some("assets/imgs/icon.png"),
 
   // Whether the window should always be on top of other windows.
   always_on_top: false,

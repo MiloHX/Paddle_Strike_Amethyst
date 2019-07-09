@@ -87,9 +87,6 @@ Container (
                         width: 1200.,
                         height: 70.,
 
-                        // for button tab order (?), default is 9
-                        tab_order: 1,
-
                         // anchor
                         anchor: Middle
                     ),

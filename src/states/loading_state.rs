@@ -2,30 +2,36 @@
 // Import modules
 //================
 
+// common modules
+use std::fs::read_dir;
+
 // amethyst modules
 use amethyst::{
-    ecs::Entity,
     prelude::*,
+    ecs::Entity,
     assets::{
         Completion, 
         ProgressCounter,
-        Loader,
+        Handle,
     },
     ui::{
-        UiText,
-        UiImage,
-        UiTransform,
-        Anchor,
-        TtfFormat,
-        Stretch,
+        UiLoader,
+        UiPrefab,
     },
+    utils::application_root_dir,
 };
 
 // local modules
-use crate::components::FlashingComp;
-use crate::components::FlashingStyle;
+use crate::components::flashing_comp::FlashingStyle;
 use crate::states::disclaimer_state::DisclaimerState;
-use crate::states::state_event::CustomStateEvent;
+use crate::resources::ui_prefab_registry::UiPrefabRegistry;
+use crate::resources::ui_helper::impl_flashing_comp;
+
+//===========
+// Constants
+//===========
+const LOADING_SCREEN_ID: &str = "loading_screen";
+const LOADING_TEXT_ID:   &str = "loading_text";
 
 //=======================
 // Declare loading state
@@ -36,116 +42,101 @@ use crate::states::state_event::CustomStateEvent;
 // a seperate method (here we use default())to return an instance (Self) need to be used
 #[derive(Default)]
 pub struct LoadingState {
-    // Loading screen entity
-    loading_screen:     Option<Entity>,
     // Tracks loaded assets.
-    loading_progress:   Option<ProgressCounter>,
-    // Temp
-    delay_frame_count:  u32,
+    loading_screen_progress:    Option<ProgressCounter>,
+    loading_prefabs_progress:   Option<ProgressCounter>,
+    loading_screen:             Option<Entity>,
 }
 
 //=======================
 // Implement State trait
 //=======================
-impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
+impl SimpleState for LoadingState {
 
     //----------------
     // Start up tasks
     //----------------
-    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        // init loading progress
-        self.loading_progress = Some(ProgressCounter::new());
-
-        // load font for loading screen
-        let font = data.world.read_resource::<Loader>().load(
-            "assets/fonts/players.ttf",
-            TtfFormat,
-            (),
-            &data.world.read_resource(),
-        );
-
-        // set the transform of the loading screen
-        let loading_transform = UiTransform::new(
-            "loading".to_string(),
-            Anchor::Middle,
-            Anchor::Middle,
-            0.,
-            0.,
-            1.,
-            300.,
-            50.,)
-            .with_stretch(Stretch::XY {
-                x_margin: 0., 
-                y_margin: 0., 
-                keep_aspect_ratio: false
-            });
-
-        // set loading text color
-        let loading_color = [1., 1., 0., 1.];
-
-        // save the loading screen entity
-        self.loading_screen = Some(data.world
-            .create_entity()
-            .with(loading_transform)
-            .with(UiImage::SolidColor([1., 1., 1., 1.,]))
-            .with(UiText::new(
-                font,
-                "Loading".to_string(),
-                loading_color,
-                56.,
-            ))
-            .with(FlashingComp::new(
-                loading_color, 
-                true, 
-                1., 
-                0.8, 
-                FlashingStyle::Darkening, [1., 1., 0., 0.]),
-            )
-            .build());
-
-            // LOAD SOMETHING HERE!
+    fn on_start(&mut self, mut data: StateData<GameData>) {
+        let mut ui_prefab_registry = UiPrefabRegistry::default();
+        self.loading_screen_progress    = Some(load_loading_screen(&mut data.world, &mut ui_prefab_registry));
+        self.loading_prefabs_progress   = Some(load_prefabs(&mut data.world, &mut ui_prefab_registry));
+        data.world.add_resource(ui_prefab_registry);
     }
 
-    //---------------
-    // Stoping tasks 
-    //---------------
-    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+    //----------------
+    // Stopping tasks 
+    //----------------
+    fn on_stop(&mut self, data: StateData<GameData>) {
         // clean up
-        if let Some(screen) = self.loading_screen {
-            let _result = data.world.entities().delete(screen);
+        self.loading_screen_progress    = None;
+        self.loading_prefabs_progress   = None;
+        // remove loading screen
+        if let Some(loading_screen) = self.loading_screen {
+            if data.world.delete_entity(loading_screen).is_ok() {
+                self.loading_screen = None;
+            }
         }
-        self.loading_screen = None;
-        self.loading_progress = None;
-        self.delay_frame_count = 0;
+
     }
 
     //--------------
     // Update tasks 
     //--------------
-    //
-    // This will be called repeatly until transition to other state
-    fn update(&mut self, data: StateData<'_, GameData<'a, 'a>>)-> Trans<GameData<'a, 'a>, CustomStateEvent> {
+    fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
 
         // update game data
         data.data.update(&data.world);
 
-        // here will get the counter as a reference
-        if let Some(ref counter) = self.loading_progress.as_ref() {
-            match counter.complete() {
-                Completion::Loading  => {
-                    // loading onging
-                }
-                Completion::Failed   => {
-                    info!("======= Loading Failed    =======");
-                }
-                Completion::Complete => {
-                    // TESTING ONLY!
-                    self.delay_frame_count += 1;
-                    if self.delay_frame_count < 150  {
+        // show loading screen when completed
+        if self.loading_screen.is_none() {
+            if let Some(ref load_screen_prog) = self.loading_screen_progress.as_ref() {
+                match load_screen_prog.complete() {
+                    Completion::Loading  => {
                         return Trans::None;
                     }
+                    Completion::Failed   => {
+                        error!("Loading Screen Failed to Load!");
+                        return Trans::Quit;
+                    }
+                    Completion::Complete => {
+                        let loading_scrn = data
+                            .world
+                            .read_resource::<UiPrefabRegistry>()
+                            .find(data.world, LOADING_SCREEN_ID);
+                        if let Some(loading_scrn) = loading_scrn {
+                            self.loading_screen = Some(
+                                data.world.create_entity()
+                                    .with(loading_scrn)
+                                    .build()
+                            );
+                            impl_flashing_comp(
+                                LOADING_TEXT_ID, 
+                                data, 
+                                true, 
+                                1., 
+                                0.8, 
+                                FlashingStyle::Darkening, 
+                                [1., 1., 0., 0.]
+                            );
+                        }
+                    }
+                }           
+            }
+        }
+        
+        if let Some(ref load_prefabs_prog) = self.loading_prefabs_progress.as_ref() {
+            match load_prefabs_prog.complete() {
+                Completion::Loading  => {
+                    return Trans::None;
+                }
+                Completion::Failed   => {
+                    error!("Prefabs Failed to Load!");
+                    return Trans::Quit;
+                }
+                Completion::Complete => {
+
                     info!("======= Loading Completed =======");
-                    info!("======= Switch State      =======");
+                    info!("=======   Switch State    =======");
                     return Trans::Switch(Box::new(DisclaimerState::default()));
                 }
             }
@@ -154,4 +145,53 @@ impl<'a> State<GameData<'a, 'a>, CustomStateEvent> for LoadingState {
         Trans::None
     }
 
+}
+
+// Load Loading screen in another thread, and register it
+fn load_loading_screen(world: &mut World, registry:&mut UiPrefabRegistry) -> ProgressCounter {
+    let mut progress_counter = ProgressCounter::new();
+    let laoding_screen_path = application_root_dir()
+        .unwrap()
+        .into_os_string()
+        .into_string()
+        .unwrap()
+        + "/resources/ui/loading_screen.ron";
+
+    registry.prefabs.push(world.exec(|loader: UiLoader<'_>| {
+        loader.load(
+            laoding_screen_path,
+            &mut progress_counter,
+        )
+    }));
+    progress_counter  
+}
+
+// Load Prefabs in another thread, and register it
+fn load_prefabs(world: &mut World, registry:&mut UiPrefabRegistry) -> ProgressCounter {
+    let mut progress_counter = ProgressCounter::new();
+
+    let prefab_dir_path = application_root_dir()
+        .unwrap()
+        .into_os_string()
+        .into_string()
+        .unwrap()
+        + "/resources/ui/prefabs";
+    let prefab_iter = read_dir(prefab_dir_path).unwrap();
+    registry.prefabs.extend(prefab_iter
+        .map(|prefab_dir_entry| {
+            world.exec(|loader: UiLoader<'_>| {
+                loader.load(
+                    make_name("ui/prefabs/", &prefab_dir_entry.unwrap()),
+                    &mut progress_counter,
+                )
+            })
+        })
+        .collect::<Vec<Handle<UiPrefab>>>());
+    progress_counter
+}
+
+fn make_name(subdirectory: &str, entry: &std::fs::DirEntry) -> String {
+    let path_buffer = entry.path();
+    let filename = path_buffer.file_name().unwrap();
+    format!("{}{}", subdirectory, filename.to_str().unwrap())
 }

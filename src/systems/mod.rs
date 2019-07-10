@@ -10,7 +10,5 @@
 //
 
 // declare modules
-mod ui_flashing_system;
-
-// move the struts / enums inside the modules into this scope ("systems")
-pub use self::ui_flashing_system::UiFlashingSystem;
+pub mod ui_flashing_system;
+pub mod ps_ui_bundle;

@@ -10,8 +10,8 @@ use amethyst::{
 };
 
 // local modules
-use crate::components::FlashingComp;
-use crate::components::FlashingStyle;
+use crate::components::flashing_comp::FlashingComp;
+use crate::components::flashing_comp::FlashingStyle;
 
 //======================
 // Text Flashing System

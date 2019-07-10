@@ -1,0 +1,32 @@
+#![enable(implicit_some)]
+Container(
+    transform: (
+        id:      "loading_screen",
+        anchor:  Middle,
+        stretch: XY( x_margin: 0.0, y_margin: 0.0, keep_aspect_ratio: true),
+        width:   1280.,
+        height:  960.,
+    ),
+    children: [
+        Label(
+            transform: (
+                id: "loading_text",
+                x: 0.,
+                y: 0.,
+                width: 300.,
+                height: 56.,
+
+                // anchor
+                anchor: Middle
+            ),
+
+            text: (
+                text: "Loading",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 56.,
+                color: (1., 1., 0., 1.),
+                align: Middle
+            )
+        ),
+    ]
+)

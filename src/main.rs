@@ -29,9 +29,10 @@ mod components;
 mod states;
 mod systems;
 mod render_graph;
+mod resources;
 use crate::render_graph::RenderGraph;
-use crate::states::LoadingState;
-use crate::states::{CustomStateEvent, CustomStateEventReader};
+use crate::states::loading_state::LoadingState;
+use crate::systems::ps_ui_bundle::PsUiBundle;
 
 //===============
 // main function
@@ -80,8 +81,8 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(TransformBundle::new())?
         // UI bundle to handle UI
         .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
-        // Add user defined systems
-        .with(systems::UiFlashingSystem, "text_flashing_system", &[])
+        // Add user defined UI systems
+        .with_bundle(PsUiBundle)?
         // Sprite sheet processor have to be loaded when DrawFlat2DDesc pass is used,
         // or the program will panic "Tried to fetch a resource, but the resource does not exist."
         .with(
@@ -102,7 +103,7 @@ fn main() -> amethyst::Result<()> {
     // note that use this type of definition is because we are using custom state event.
     // for default event types the follow way should be used
     //      let mut game = Application::new(assets_dir, state_name, game_data)?;
-    let mut game: CoreApplication<GameData, CustomStateEvent, CustomStateEventReader> =
+    let mut game: Application<GameData> =
         CoreApplication::build(resources_dir, LoadingState::default())?
             .with_frame_limit(FrameRateLimitStrategy::Sleep, 60)
             .build(game_data)?;

@@ -1,4 +1,4 @@
-// change the fields to option
+// change the fields to option when neccessary (?)
 #![enable(implicit_some)]
 
 //=========================
@@ -9,7 +9,7 @@ Container (
     // transform attributes of the background container
     transform: (
         // An identifier. Serves no purpose other than to help you distinguish between UI elements.
-        id: "background",
+        id: "disclaimer",
 
         // Indicates where the element sits, relative to the parent (or to the screen, if there is no parent)
         // TopLeft    | TopMiddle    | TopRight 
@@ -65,7 +65,7 @@ Container (
 
         Container (
             transform: (
-                id:     "disclaimer_root",
+                id:     "disclaimer_text_root",
                 anchor: Middle
             ),
 
@@ -169,7 +169,7 @@ Container (
                 ),
                 Label(
                     transform: (
-                        id: "disclaimer_helper",
+                        id: "help_message",
                         x: 0.,
                         y: -300.,
                         width: 1200.,

@@ -7,10 +7,13 @@ Container(
         width:   1280.,
         height:  960.,
     ),
+
+    background: SolidColor(0.0, 0.0, 0.0, 1.),
+
     children: [
         Label(
             transform: (
-                id: "loading_text",
+                id: "loading_label",
                 x: 0.,
                 y: 0.,
                 width: 300.,
@@ -21,7 +24,7 @@ Container(
             ),
 
             text: (
-                text: "Loading",
+                text: "loading",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
                 font_size: 56.,
                 color: (1., 1., 0., 1.),

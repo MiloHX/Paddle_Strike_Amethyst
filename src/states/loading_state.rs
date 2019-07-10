@@ -31,7 +31,7 @@ use crate::resources::ui_helper::impl_flashing_comp;
 // Constants
 //===========
 const LOADING_SCREEN_ID: &str = "loading_screen";
-const LOADING_TEXT_ID:   &str = "loading_text";
+const LOADING_TEXT_ID:   &str = "loading_label";
 
 //=======================
 // Declare loading state
@@ -46,6 +46,8 @@ pub struct LoadingState {
     loading_screen_progress:    Option<ProgressCounter>,
     loading_prefabs_progress:   Option<ProgressCounter>,
     loading_screen:             Option<Entity>,
+    loading_screen_is_ready:    bool,
+    test_frame_count:           u32,
 }
 
 //=======================
@@ -68,6 +70,7 @@ impl SimpleState for LoadingState {
     //----------------
     fn on_stop(&mut self, data: StateData<GameData>) {
         // clean up
+        self.loading_screen_is_ready    = false;
         self.loading_screen_progress    = None;
         self.loading_prefabs_progress   = None;
         // remove loading screen
@@ -109,21 +112,23 @@ impl SimpleState for LoadingState {
                                     .with(loading_scrn)
                                     .build()
                             );
-                            impl_flashing_comp(
-                                LOADING_TEXT_ID, 
-                                data, 
-                                true, 
-                                1., 
-                                0.8, 
-                                FlashingStyle::Darkening, 
-                                [1., 1., 0., 0.]
-                            );
                         }
                     }
                 }           
             }
-        }
-        
+        } else if !self.loading_screen_is_ready {
+            impl_flashing_comp(
+                LOADING_TEXT_ID, 
+                data, 
+                true, 
+                1., 
+                0.8, 
+                FlashingStyle::Darkening, 
+                [1., 1., 0., 0.]
+            );
+            self.loading_screen_is_ready = true;
+        } 
+
         if let Some(ref load_prefabs_prog) = self.loading_prefabs_progress.as_ref() {
             match load_prefabs_prog.complete() {
                 Completion::Loading  => {
@@ -134,6 +139,10 @@ impl SimpleState for LoadingState {
                     return Trans::Quit;
                 }
                 Completion::Complete => {
+                    if self.test_frame_count < 90 {
+                        self.test_frame_count += 1;
+                        return Trans::None;
+                    }
 
                     info!("======= Loading Completed =======");
                     info!("=======   Switch State    =======");

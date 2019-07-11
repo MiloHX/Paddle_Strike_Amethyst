@@ -14,9 +14,9 @@ pub enum UiFlashingStyle {
     Darkening,      // color only get darkened
 }
 
-//================
-// Flashing Style
-//================
+//====================
+// Flashing Component
+//====================
 #[derive(Clone)]
 pub struct UiFlashingComp {
     pub orginal_color:  [f32; 4],       // Saved original color

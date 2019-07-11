@@ -3,14 +3,14 @@ use amethyst::{
     ecs::Entity,
     prelude::*,
     input::InputEvent,
+    ui::UiFinder,
 };
 
 // local modules
 use crate::components::ui_flashing_comp::UiFlashingStyle;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
-use crate::resources::ui_helper::impl_flashing_comp;
-use crate::resources::ui_helper::impl_swinging_comp;
+use crate::resources::ui_helper::*;
 
 
 //===========
@@ -29,8 +29,9 @@ const CURSOR:           &str = "cursor";
 #[derive(Default)]
 pub struct MainMenuState {
     // Loading screen entity
-    main_menu_screen:      Option<Entity>,
-    main_menu_is_ready:    bool,
+    main_menu_screen:   Option<Entity>,
+    main_menu_cursor:   Option<Entity>,
+    main_menu_is_ready: bool,
 }
 
 impl SimpleState for MainMenuState {
@@ -57,18 +58,22 @@ impl SimpleState for MainMenuState {
         if let Some(main_menu_screen) = self.main_menu_screen {
             if data.world.delete_entity(main_menu_screen).is_ok() {
                 self.main_menu_screen = None;
+                self.main_menu_cursor = None;
             }
         }
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
         data.data.update(&data.world);
+
+        // Adding extra components to the menu item
+        // Not an ideal solutioin, should be configured in a ron file.
         if !self.main_menu_is_ready {
-            if !self.main_menu_screen.is_none() {
+            if self.main_menu_screen.is_some() {
                 impl_flashing_comp(
                     BUTTON_1_PLAYER, 
                     data, 
-                    true, 
+                    false, 
                     1., 
                     0.8, 
                     UiFlashingStyle::Lightening, 
@@ -101,30 +106,46 @@ impl SimpleState for MainMenuState {
                     UiFlashingStyle::Lightening, 
                     [1., 1., 0., 0.]
                 );
-                impl_swinging_comp(
-                    CURSOR,
-                    data,
-                    true,
-                    1.,
-                    1.,
-                    UiSwingingStyle::Horizontal,
-                );
+
+                self.main_menu_cursor = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(CURSOR) 
+                });
+
+                if let Some(cursor_entity) = self.main_menu_cursor {
+                    impl_swinging_comp(
+                        &cursor_entity,
+                        data,
+                        true,
+                        1.5,
+                        1.,
+                        UiSwingingStyle::Horizontal,
+                    );
+                    impl_cursor_movement_comp(
+                        &cursor_entity,
+                        data,                       
+                    );
+                }
+
                 self.main_menu_is_ready = true;
             }
         }
         Trans::None
     }
 
-    fn handle_event(&mut self, _data: StateData<GameData>, event: StateEvent) -> SimpleTrans {
+    fn handle_event(&mut self, mut data: StateData<GameData>, event: StateEvent) -> SimpleTrans {
         match event {
             StateEvent::Input(input_event) => {
                 if let InputEvent::ActionPressed(action) = input_event {
                     if action == "confirm" {
-                        return Trans::Quit;
+                        info!("CONFIRM PRESSED!");
                     } else if action == "up" {
-                        return Trans::Quit;
+                        if let Some(cursor) = self.main_menu_cursor {
+                            move_cursor(&cursor, &mut data, false);
+                        }
                     } else if action == "down" {
-                        return Trans::Quit;
+                        if let Some(cursor) = self.main_menu_cursor {
+                            move_cursor(&cursor, &mut data, true);
+                        }                     
                     }
                     Trans::None
                 } else {

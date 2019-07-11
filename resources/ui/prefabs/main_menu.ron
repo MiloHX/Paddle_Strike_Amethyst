@@ -1,0 +1,244 @@
+#![enable(implicit_some)]
+
+Container (
+    // transform attributes of the background container
+    transform: (
+        id:      "main_menu",
+        anchor:  Middle,
+        stretch: XY( x_margin: 0.0, y_margin: 0.0, keep_aspect_ratio: true),
+        width:   1280.,
+        height:  960.,
+    ),
+
+    background: SolidColor(0.0, 0.0, 0.0, 1.),
+
+    children: [
+
+        // title
+        Image(
+            transform: (
+                id: "title_01_p",
+                x: -580.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_P.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_02_a",
+                x: -480.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_A.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_03_d",
+                x: -380.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_D.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_04_d",
+                x: -280.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_D.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_05_l",
+                x: -180.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_L.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_06_e",
+                x: -80.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_E.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_07_s",
+                x: 80.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_S.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_08_t",
+                x: 180.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_T.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_09_r",
+                x: 280.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_R.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_10_i",
+                x: 380.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_I.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_11_k",
+                x: 480.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_K.png", ("IMAGE", ()))),
+        ),
+        Image(
+            transform: (
+                id: "title_12_e",
+                x: 580.,
+                y: 250.,
+                width:  150.,
+                height: 150.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/letter_E.png", ("IMAGE", ()))),
+        ),
+
+        // options
+        Image(
+            transform: (
+                id: "cursor",
+                x: -160.,
+                y: 0.,
+                width:  50.,
+                height: 50.,
+                anchor: Middle,
+            ),
+            image: Texture(File("assets/imgs/cursor.png", ("IMAGE", ()))),
+        ),
+        Button(
+            transform: (
+                id: "button_1_player",
+                x: 150.,
+                y: 0.,
+                width: 500.,
+                height: 56.,
+                anchor: Middle,
+                mouse_reactive: true,
+            ),
+            button: (
+                text: "1 PLAYER",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 56.,
+                normal_text_color: (0., 0., 1., 1.),
+                hover_text_color:  (1., 1., 1., 1.),
+                press_text_color:  (0., 0., 0.5, 1.),
+                align: BottomLeft,
+            )
+        ),  
+        Label(
+            transform: (
+                id: "button_2_players",
+                x: 150.,
+                y: -100.,
+                width: 500.,
+                height: 56.,
+
+                // anchor
+                anchor: Middle,
+            ),
+
+            text: (
+                text: "2 PLAYERS",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 56.,
+                color: (1., 1., 1., 1.),
+                align: BottomLeft,
+            )
+        ),
+        Label(
+            transform: (
+                id: "button_cpu_vs_cpu",
+                x: 150.,
+                y: -200.,
+                width: 500.,
+                height: 56.,
+
+                // anchor
+                anchor: Middle,
+            ),
+
+            text: (
+                text: "CPU VS CPU",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 56.,
+                color: (1., 1., 1., 1.),
+                align: BottomLeft,
+            )
+        ),
+        Label(
+            transform: (
+                id: "button_exit",
+                x: 150.,
+                y: -350.,
+                width: 500.,
+                height: 56.,
+
+                // anchor
+                anchor: Middle,
+            ),
+
+            text: (
+                text: "EXIT",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 56.,
+                color: (1., 1., 1., 1.),
+                align: BottomLeft,
+            )
+        ),     
+    ]
+)

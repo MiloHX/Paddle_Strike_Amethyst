@@ -43,8 +43,8 @@ Container (
         local_z: 0.,
 
         // The width/height of this UI element.
-        width:  20.,
-        height: 20.,
+        width:  1280.,
+        height: 960.,
 
         // The scale mode indicates if the position is in pixel or is relative (%) to the parent's size.
         // Pixel | Percent
@@ -169,7 +169,7 @@ Container (
                 ),
                 Label(
                     transform: (
-                        id: "help_message",
+                        id: "instruction",
                         x: 0.,
                         y: -300.,
                         width: 1200.,

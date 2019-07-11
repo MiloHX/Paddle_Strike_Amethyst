@@ -1,7 +1,3 @@
-//=============
-// Importation
-//=============
-
 // amethyst modules
 use amethyst::{
     ecs::Entity,
@@ -10,60 +6,61 @@ use amethyst::{
 };
 
 // local modules
-use crate::states::main_menu_state::MainMenuState;
 use crate::components::flashing_comp::FlashingStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::impl_flashing_comp;
 
+
 //===========
 // Constants
 //===========
-const DISCLAIMER_ID: &str = "disclaimer";
-const INSTRUCTION:   &str = "instruction";
+const MAIN_MENU_ID: &str = "main_menu";
+const PLACEHOLDER:  &str = "placeholder";
 
-//=========================
-// Define disclaimer state
-//=========================
+//===================
+// Define menu state
+//===================
 #[derive(Default)]
-pub struct DisclaimerState {
+pub struct MainMenuState {
     // Loading screen entity
-    disclaimer_screen:      Option<Entity>,
-    disclaimer_is_ready:    bool,
+    main_menu_screen:      Option<Entity>,
+    main_menu_is_ready:    bool,
 }
 
-impl SimpleState for DisclaimerState {
+impl SimpleState for MainMenuState {
+
     fn on_start(&mut self, data: StateData<GameData>) {
         // assume UiPrefab loading has happened in a previous state
         // look through the UiPrefabRegistry for the "disclaimer" prefab and instantiate it
-        let disclaimer_prefab = data
+        let main_menu_prefab = data
             .world
             .read_resource::<UiPrefabRegistry>()
-            .find(data.world, DISCLAIMER_ID);
-        if let Some(disclaimer_prefab) = disclaimer_prefab {
-            self.disclaimer_screen = Some(data
+            .find(data.world, MAIN_MENU_ID);
+        if let Some(main_menu_prefab) = main_menu_prefab {
+            self.main_menu_screen = Some(data
                 .world
                 .create_entity()
-                .with(disclaimer_prefab)
+                .with(main_menu_prefab)
                 .build()
             );
         }
     }
 
     fn on_stop(&mut self, data: StateData<GameData>) {
-        self.disclaimer_is_ready = false;
-        if let Some(disclaimer_screen) = self.disclaimer_screen {
-            if data.world.delete_entity(disclaimer_screen).is_ok() {
-                self.disclaimer_screen = None;
+        self.main_menu_is_ready = false;
+        if let Some(main_menu_screen) = self.main_menu_screen {
+            if data.world.delete_entity(main_menu_screen).is_ok() {
+                self.main_menu_screen = None;
             }
         }
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
         data.data.update(&data.world);
-        if !self.disclaimer_is_ready {
-            if !self.disclaimer_screen.is_none() {
+        if !self.main_menu_is_ready {
+            if !self.main_menu_screen.is_none() {
                 impl_flashing_comp(
-                    INSTRUCTION, 
+                    PLACEHOLDER, 
                     data, 
                     true, 
                     1., 
@@ -71,7 +68,7 @@ impl SimpleState for DisclaimerState {
                     FlashingStyle::Darkening, 
                     [1., 1., 0., 0.]
                 );
-                self.disclaimer_is_ready = true;
+                self.main_menu_is_ready = true;
             }
         }
         Trans::None
@@ -82,7 +79,7 @@ impl SimpleState for DisclaimerState {
             StateEvent::Input(input_event) => {
                 if let InputEvent::ActionPressed(action) = input_event {
                     if action == "confirm" {
-                        return Trans::Switch(Box::new(MainMenuState::default()));
+                        return Trans::Quit;
                     }
                     Trans::None
                 } else {
@@ -92,4 +89,5 @@ impl SimpleState for DisclaimerState {
             _ => Trans::None,
         }
     }
+
 }

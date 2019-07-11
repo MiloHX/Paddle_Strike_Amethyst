@@ -56,7 +56,7 @@ dependencies = [
 [[package]]
 name = "amethyst"
 version = "0.11.1"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_animation 0.6.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
@@ -90,7 +90,7 @@ dependencies = [
 [[package]]
 name = "amethyst_animation"
 version = "0.6.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -109,7 +109,7 @@ dependencies = [
 [[package]]
 name = "amethyst_assets"
 version = "0.7.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_error 0.1.0 (git+https://github.com/amethyst/amethyst)",
@@ -134,7 +134,7 @@ dependencies = [
 [[package]]
 name = "amethyst_audio"
 version = "0.6.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -149,7 +149,7 @@ dependencies = [
 [[package]]
 name = "amethyst_config"
 version = "0.10.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "ron 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -159,7 +159,7 @@ dependencies = [
 [[package]]
 name = "amethyst_controls"
 version = "0.5.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -173,7 +173,7 @@ dependencies = [
 [[package]]
 name = "amethyst_core"
 version = "0.6.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "alga 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "alga_derive 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -197,7 +197,7 @@ dependencies = [
 [[package]]
 name = "amethyst_derive"
 version = "0.4.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "proc-macro2 0.4.30 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.12 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -207,7 +207,7 @@ dependencies = [
 [[package]]
 name = "amethyst_error"
 version = "0.1.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "backtrace 0.3.32 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -215,7 +215,7 @@ dependencies = [
 [[package]]
 name = "amethyst_input"
 version = "0.7.1"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_config 0.10.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -231,7 +231,7 @@ dependencies = [
 [[package]]
 name = "amethyst_locale"
 version = "0.5.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -243,7 +243,7 @@ dependencies = [
 [[package]]
 name = "amethyst_network"
 version = "0.4.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_error 0.1.0 (git+https://github.com/amethyst/amethyst)",
@@ -261,7 +261,7 @@ dependencies = [
 [[package]]
 name = "amethyst_rendy"
 version = "0.1.2"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -291,7 +291,7 @@ dependencies = [
 [[package]]
 name = "amethyst_ui"
 version = "0.6.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_audio 0.6.0 (git+https://github.com/amethyst/amethyst)",
@@ -327,7 +327,7 @@ dependencies = [
 [[package]]
 name = "amethyst_utils"
 version = "0.6.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_assets 0.7.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_controls 0.5.0 (git+https://github.com/amethyst/amethyst)",
@@ -347,7 +347,7 @@ dependencies = [
 [[package]]
 name = "amethyst_window"
 version = "0.1.0"
-source = "git+https://github.com/amethyst/amethyst#c4d0084d2f7611180ae08a6466e6dbf07351583d"
+source = "git+https://github.com/amethyst/amethyst#ba51322613c1e100f583ffb786e969d33189450c"
 dependencies = [
  "amethyst_config 0.10.0 (git+https://github.com/amethyst/amethyst)",
  "amethyst_core 0.6.0 (git+https://github.com/amethyst/amethyst)",

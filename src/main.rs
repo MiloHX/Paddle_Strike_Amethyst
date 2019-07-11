@@ -54,17 +54,12 @@ fn main() -> amethyst::Result<()> {
         .unwrap()
         + "/resources";
 
-    // construct the display_config_path by using resources_dir + "display_confg.ron"
+    // display_config_path = resources_dir + "display_confg.ron"
     let display_config_path = resources_dir.clone() + "/display_config.ron";
 
-    // constrcut the controller configuration path
-    let key_bindings_path = {
-        if cfg!(feature = "sdl_controller") {
-            resources_dir.clone() + "/input_controller.ron"
-        } else {
-            resources_dir.clone() + "/input.ron"
-        }
-    };
+    // input configuration path
+    let key_bindings_path = resources_dir.clone() + "/input.ron";
+
 
     // The global game data. Here we register all systems and bundles that will run for every game state.
     // The game states will define additional dispatchers for state specific systems.

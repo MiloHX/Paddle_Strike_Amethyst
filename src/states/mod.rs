@@ -36,3 +36,4 @@
 // declare modules
 pub mod loading_state;
 pub mod disclaimer_state;
+pub mod main_menu_state;

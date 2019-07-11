@@ -1,7 +1,3 @@
-//================
-// Import modules
-//================
-
 // common modules
 use std::fs::read_dir;
 
@@ -47,7 +43,6 @@ pub struct LoadingState {
     loading_prefabs_progress:   Option<ProgressCounter>,
     loading_screen:             Option<Entity>,
     loading_screen_is_ready:    bool,
-    test_frame_count:           u32,
 }
 
 //=======================
@@ -139,13 +134,6 @@ impl SimpleState for LoadingState {
                     return Trans::Quit;
                 }
                 Completion::Complete => {
-                    if self.test_frame_count < 90 {
-                        self.test_frame_count += 1;
-                        return Trans::None;
-                    }
-
-                    info!("======= Loading Completed =======");
-                    info!("=======   Switch State    =======");
                     return Trans::Switch(Box::new(DisclaimerState::default()));
                 }
             }

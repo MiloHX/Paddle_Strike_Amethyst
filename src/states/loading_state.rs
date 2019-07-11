@@ -18,7 +18,7 @@ use amethyst::{
 };
 
 // local modules
-use crate::components::flashing_comp::FlashingStyle;
+use crate::components::ui_flashing_comp::UiFlashingStyle;
 use crate::states::disclaimer_state::DisclaimerState;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::impl_flashing_comp;
@@ -118,7 +118,7 @@ impl SimpleState for LoadingState {
                 true, 
                 1., 
                 0.8, 
-                FlashingStyle::Darkening, 
+                UiFlashingStyle::Darkening, 
                 [1., 1., 0., 0.]
             );
             self.loading_screen_is_ready = true;

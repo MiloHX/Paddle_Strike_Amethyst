@@ -6,5 +6,11 @@
         "confirm": [
             [Key(Return)]
         ],
+        "up": [
+            [Key(W)]
+        ],
+        "down": [
+            [Key(S)]
+        ],
     },
 )

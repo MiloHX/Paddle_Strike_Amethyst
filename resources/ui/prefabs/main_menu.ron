@@ -154,32 +154,32 @@ Container (
                 id: "cursor",
                 x: -160.,
                 y: 0.,
-                width:  50.,
-                height: 50.,
+                width:  45.,
+                height: 45.,
                 anchor: Middle,
             ),
             image: Texture(File("assets/imgs/cursor.png", ("IMAGE", ()))),
-        ),
-        Button(
+        ),  
+        Label(
             transform: (
                 id: "button_1_player",
                 x: 150.,
                 y: 0.,
                 width: 500.,
                 height: 56.,
+
+                // anchor
                 anchor: Middle,
-                mouse_reactive: true,
             ),
-            button: (
+
+            text: (
                 text: "1 PLAYER",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
                 font_size: 56.,
-                normal_text_color: (0., 0., 1., 1.),
-                hover_text_color:  (1., 1., 1., 1.),
-                press_text_color:  (0., 0., 0.5, 1.),
-                align: BottomLeft,
+                color: (0.2, 0.2, 1., 1.),
+                align: MiddleLeft,
             )
-        ),  
+        ),
         Label(
             transform: (
                 id: "button_2_players",
@@ -196,13 +196,13 @@ Container (
                 text: "2 PLAYERS",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
                 font_size: 56.,
-                color: (1., 1., 1., 1.),
-                align: BottomLeft,
+                color: (0.2, 0.2, 1., 1.),
+                align: MiddleLeft,
             )
         ),
         Label(
             transform: (
-                id: "button_cpu_vs_cpu",
+                id: "button_cpu_v_cpu",
                 x: 150.,
                 y: -200.,
                 width: 500.,
@@ -213,11 +213,11 @@ Container (
             ),
 
             text: (
-                text: "CPU VS CPU",
+                text: "CPU V CPU",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
                 font_size: 56.,
-                color: (1., 1., 1., 1.),
-                align: BottomLeft,
+                color: (0.2, 0.2, 1., 1.),
+                align: MiddleLeft,
             )
         ),
         Label(
@@ -236,8 +236,8 @@ Container (
                 text: "EXIT",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
                 font_size: 56.,
-                color: (1., 1., 1., 1.),
-                align: BottomLeft,
+                color: (0.2, 0.2, 1., 1.),
+                align: MiddleLeft,
             )
         ),     
     ]

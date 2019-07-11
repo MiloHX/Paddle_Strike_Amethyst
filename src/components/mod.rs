@@ -9,4 +9,5 @@
 //
 
 // declare modules
-pub mod flashing_comp;
+pub mod ui_flashing_comp;
+pub mod ui_swinging_comp;

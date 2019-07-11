@@ -11,7 +11,7 @@ use amethyst::{
 
 // local modules
 use crate::states::main_menu_state::MainMenuState;
-use crate::components::flashing_comp::FlashingStyle;
+use crate::components::ui_flashing_comp::UiFlashingStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::impl_flashing_comp;
 
@@ -68,7 +68,7 @@ impl SimpleState for DisclaimerState {
                     true, 
                     1., 
                     0.8, 
-                    FlashingStyle::Darkening, 
+                    UiFlashingStyle::Darkening, 
                     [1., 1., 0., 0.]
                 );
                 self.disclaimer_is_ready = true;

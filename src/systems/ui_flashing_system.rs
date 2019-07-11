@@ -1,17 +1,13 @@
-//================
-// Import modules
-//================
-
 // amethyst modules
 use amethyst::{
     core::timing::Time,
-    ecs::prelude::{Join, Read, System, WriteStorage, ReadStorage},
+    ecs::prelude::{Join, Read, System, WriteStorage, ReadStorage,},
     ui::UiText,
 };
 
 // local modules
-use crate::components::flashing_comp::FlashingComp;
-use crate::components::flashing_comp::FlashingStyle;
+use crate::components::ui_flashing_comp::UiFlashingComp;
+use crate::components::ui_flashing_comp::UiFlashingStyle;
 
 //======================
 // Text Flashing System
@@ -23,7 +19,7 @@ impl<'s> System<'s> for UiFlashingSystem {
     type SystemData = (
         Read<'s, Time>, 
         WriteStorage<'s, UiText>,
-        ReadStorage<'s, FlashingComp>,
+        ReadStorage<'s, UiFlashingComp>,
     );
 
     // system execution (run every frame)
@@ -37,17 +33,17 @@ impl<'s> System<'s> for UiFlashingSystem {
                 let factor: f32;
                 // calculate the flashing factor based on the rate, intensity and style setting
                 match flashing_item.style {
-                    FlashingStyle::TwoWays => {
+                    UiFlashingStyle::TwoWays => {
                         factor = (
                             sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
                         ).sin() * 0.5 * flashing_item.intensity;
                     }
-                    FlashingStyle::Lightening => {
+                    UiFlashingStyle::Lightening => {
                         factor = (
                             (sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
                         ).sin() + 1.) * 0.5 * flashing_item.intensity;                        
                     }
-                    FlashingStyle::Darkening => {
+                    UiFlashingStyle::Darkening => {
                         factor = (
                             (sys_time.absolute_real_time_seconds() as f32 * 5. * flashing_item.rate
                         ).sin() - 1.) * 0.5 * flashing_item.intensity;                        

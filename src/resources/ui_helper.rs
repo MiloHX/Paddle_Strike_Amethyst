@@ -2,7 +2,6 @@ use amethyst::{
     ecs::Entity,
     prelude::*,
     ui::{
-        UiFinder,
         UiText,
         UiTransform,
     },
@@ -13,10 +12,12 @@ use crate::components::ui_flashing_comp::UiFlashingComp;
 use crate::components::ui_flashing_comp::UiFlashingStyle;
 use crate::components::ui_swinging_comp::UiSwingingComp;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
-use crate::components::ui_cursor_movement_comp::UiCursorMovementComp;
+use crate::components::ui_cursor_comp::UiCursorComp;
+use crate::components::ui_cursor_option_comp::UiCursorOptionComp;
+use crate::components::ui_cursor_option_comp::UiCursorOptionStyle;
 
 pub fn impl_flashing_comp (
-    ui_text_id:     &str, 
+    text_entity:    &Entity, 
     data:           &mut StateData<GameData>,
     is_flashing:    bool,
     rate:           f32, 
@@ -24,20 +25,24 @@ pub fn impl_flashing_comp (
     style:          UiFlashingStyle,
     rgba_factors:   [f32; 4],
 ) {
-    if let Some(text_entity) = data.world.exec(|ui_finder: UiFinder<'_>| {
-        ui_finder.find(ui_text_id)
-    }) {
-        // get the UiText color
-        let ui_text_storage = data.world.read_storage::<UiText>();
-        let text_color = ui_text_storage.get(text_entity).unwrap().color;
+    // get the UiText color
+    let text_color = get_text_color(text_entity, data);
 
-        // add flashing component to the entity
-        let mut flashing_comp_write_storage = data.world.write_storage::<UiFlashingComp>();
-        let _insert_result = flashing_comp_write_storage.insert(
-            text_entity, 
-            UiFlashingComp::new(text_color, is_flashing, rate, intensity, style, rgba_factors),
-        );
-    }
+    // add flashing component to the entity
+    let mut flashing_comp_write_storage = data.world.write_storage::<UiFlashingComp>();
+    let _insert_result = flashing_comp_write_storage.insert(
+        *text_entity, 
+        UiFlashingComp::new(text_color, is_flashing, rate, intensity, style, rgba_factors),
+    );
+}
+
+pub fn get_text_color (
+    text_entity:    &Entity,
+    data:           &mut StateData<GameData>,
+) -> [f32; 4]  {
+    // get the UiText color
+    let ui_text_storage = data.world.read_storage::<UiText>();
+    ui_text_storage.get(*text_entity).unwrap().color
 }
 
 pub fn impl_swinging_comp (
@@ -61,27 +66,63 @@ pub fn impl_swinging_comp (
     );
 }
 
-pub fn impl_cursor_movement_comp (
-    ui_entity:  &Entity,
-    data:       &mut StateData<GameData>,
+pub fn impl_cursor_option_comp (
+    group:          &str,
+    id:             &str,
+    ui_entity:      &Entity,
+    data:           &mut StateData<GameData>, 
+    style:          UiCursorOptionStyle,
 ) {
-    // add cursor movement component to the entity
-    let mut cursor_movement_write_storage = data.world.write_storage::<UiCursorMovementComp>();
-    let _insert_result = cursor_movement_write_storage.insert(
+    let mut cursor_option_write_storage = data.world.write_storage::<UiCursorOptionComp>();
+    let _insert_result = cursor_option_write_storage.insert(
         *ui_entity, 
-        UiCursorMovementComp::default(),
+        UiCursorOptionComp::new(
+            group.to_string(), 
+            id.to_string(), 
+            style, 
+            *ui_entity
+        ),
     );
 }
 
-pub fn move_cursor(
+pub fn impl_cursor_comp (
+    ui_entity:      &Entity,
+    data:           &mut StateData<GameData>,
+    group:          &str,
+    pos_list:       Vec<(f32, f32)>,
+    pos_id_list:    Vec<String>,
+) {
+    // add cursor movement component to the entity
+    let mut cursor_write_storage = data.world.write_storage::<UiCursorComp>();
+    let _insert_result = cursor_write_storage.insert(
+        *ui_entity, 
+        UiCursorComp::new(
+            group.to_string(),
+            0, 
+            pos_list, 
+            pos_id_list
+        ),
+    );
+}
+
+pub fn move_cursor (
     cursor:     &Entity,
     data:       &mut StateData<GameData>,
     direction:  bool,
 ) {
-    let mut cursor_movement_storage = data.world.write_storage::<UiCursorMovementComp>();
-    if let Some(cursor_movement) = cursor_movement_storage.get_mut(*cursor) {
-        cursor_movement.advance_pos(direction);
-    } else {
-        error!("Cursor Movement Component Not Found!");
-    }
+    let mut cursor_storage = data.world.write_storage::<UiCursorComp>();
+    if let Some(cursor) = cursor_storage.get_mut(*cursor) {
+        cursor.advance_pos(direction);
+    } 
+}
+
+pub fn get_cursor_action (
+    cursor:     &Entity,
+    data:       &mut StateData<GameData>,
+) -> String {
+    let mut cursor_storage = data.world.write_storage::<UiCursorComp>();
+    if let Some(cursor) = cursor_storage.get_mut(*cursor) {
+        return cursor.pos_id_list[cursor.current_pos].clone();
+    } 
+    "".to_string()
 }

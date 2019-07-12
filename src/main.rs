@@ -5,6 +5,8 @@
 // external macros
 #[macro_use]
 extern crate log;
+#[macro_use]
+extern crate derive_new;
 
 // amethyst modules
 use amethyst::{

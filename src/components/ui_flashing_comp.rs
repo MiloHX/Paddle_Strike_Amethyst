@@ -17,7 +17,7 @@ pub enum UiFlashingStyle {
 //====================
 // Flashing Component
 //====================
-#[derive(Clone)]
+#[derive(Clone, new)]
 pub struct UiFlashingComp {
     pub orginal_color:  [f32; 4],       // Saved original color
     pub is_flashing:    bool,           // control if the ui element is flashing or not
@@ -25,26 +25,6 @@ pub struct UiFlashingComp {
     pub intensity:      f32,            // flashing intensity (from 0.0 to 2.0, default is 0.4)
     pub style:          UiFlashingStyle,// flashing style
     pub rgba_factors:   [f32; 4],       // rgba channel factors
-}
-
-impl UiFlashingComp {
-    pub fn new(
-        orginal_color:  [f32; 4], 
-        is_flashing:    bool, 
-        rate:           f32, 
-        intensity:      f32, 
-        style:          UiFlashingStyle, 
-        rgba_factors:   [f32; 4],
-    ) -> Self {
-        UiFlashingComp {
-            orginal_color,
-            is_flashing,
-            rate,
-            intensity,
-            style,
-            rgba_factors,   
-        }
-    }
 }
 
 // default values

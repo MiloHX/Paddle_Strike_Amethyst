@@ -13,31 +13,13 @@ pub enum UiSwingingStyle {
     Vertical,       // ui element swing vertically
 }
 
-#[derive(Clone)]
+#[derive(Clone, new)]
 pub struct UiSwingingComp {
     pub orginal_pos:    (f32, f32),     // saved original position
     pub is_swinging:    bool,           // is it swinging?
     pub rate:           f32,            // swinging rate (default is 1.0)
     pub amplitude:      f32,            // swinging amplitude
     pub style:          UiSwingingStyle,// flashing style
-}
-
-impl UiSwingingComp {
-    pub fn new(
-        orginal_pos:    (f32, f32), 
-        is_swinging:    bool, 
-        rate:           f32, 
-        amplitude:      f32, 
-        style:          UiSwingingStyle, 
-    ) -> Self {
-        UiSwingingComp {
-            orginal_pos,
-            is_swinging,
-            rate,
-            amplitude,
-            style  
-        }
-    }
 }
 
 // make it component

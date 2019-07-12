@@ -13,6 +13,7 @@ use amethyst::{
     ui::{
         UiLoader,
         UiPrefab,
+        UiFinder,
     },
     utils::application_root_dir,
 };
@@ -42,6 +43,7 @@ pub struct LoadingState {
     loading_screen_progress:    Option<ProgressCounter>,
     loading_prefabs_progress:   Option<ProgressCounter>,
     loading_screen:             Option<Entity>,
+    loading_screen_text:        Option<Entity>,
     loading_screen_is_ready:    bool,
 }
 
@@ -71,7 +73,8 @@ impl SimpleState for LoadingState {
         // remove loading screen
         if let Some(loading_screen) = self.loading_screen {
             if data.world.delete_entity(loading_screen).is_ok() {
-                self.loading_screen = None;
+                self.loading_screen_text = None;
+                self.loading_screen      = None;
             }
         }
 
@@ -112,15 +115,20 @@ impl SimpleState for LoadingState {
                 }           
             }
         } else if !self.loading_screen_is_ready {
-            impl_flashing_comp(
-                LOADING_TEXT_ID, 
-                data, 
-                true, 
-                1., 
-                0.8, 
-                UiFlashingStyle::Darkening, 
-                [1., 1., 0., 0.]
-            );
+            self.loading_screen_text = data.world.exec(|ui_finder: UiFinder<'_>| {
+                ui_finder.find(LOADING_TEXT_ID) 
+            });
+            if let Some(loading_text) = self.loading_screen_text {   
+                impl_flashing_comp(
+                    &loading_text, 
+                    data, 
+                    true, 
+                    1., 
+                    0.8, 
+                    UiFlashingStyle::Darkening, 
+                    [1., 1., 0., 0.]
+                );
+            }
             self.loading_screen_is_ready = true;
         } 
 

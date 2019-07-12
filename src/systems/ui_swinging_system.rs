@@ -34,7 +34,7 @@ impl<'s> System<'s> for UiSwingingSystem {
                 // calculate the flashing factor based on the rate, amplitude
                 let factor: f32 = (
                     sys_time.absolute_real_time_seconds() as f32 * 5. * swinging_item.rate
-                ).sin() * 0.5 * 10. * swinging_item.amplitude;
+                ).sin() * 0.5 * 6. * swinging_item.amplitude;
                 // apply swinging
                 match swinging_item.style {
                     UiSwingingStyle::Horizontal => {

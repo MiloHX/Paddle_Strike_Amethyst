@@ -17,7 +17,7 @@ edition = "2018"
 amethyst = { git = "https://github.com/amethyst/amethyst", features = ["vulkan", "no-slow-safety-checks",]}
 
 # uncomment this to make use of the #[derive(new)] macro
-# derive-new = "0.5"
+derive-new = "0.5"
 
 # uncomment this to make use of the log related macro (info! etc)
 log = "0.4"

@@ -13,4 +13,4 @@
 pub mod ui_flashing_system;
 pub mod ui_swinging_system;
 pub mod ps_ui_bundle;
-pub mod ui_main_menu_cursor_pos_system;
+pub mod ui_cursor_system;

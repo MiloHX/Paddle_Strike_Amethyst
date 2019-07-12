@@ -23,6 +23,19 @@ const BUTTON_2_PLAYERS: &str = "button_2_players";
 const BUTTON_CPU_V_CPU: &str = "button_cpu_v_cpu";
 const BUTTON_EXIT:      &str = "button_exit";
 const CURSOR:           &str = "cursor";
+const TITLE_01_P:       &str = "title_01_p";
+const TITLE_02_A:       &str = "title_02_a";
+const TITLE_03_D:       &str = "title_03_d";
+const TITLE_04_D:       &str = "title_04_d";
+const TITLE_05_L:       &str = "title_05_l";
+const TITLE_06_E:       &str = "title_06_e";
+const TITLE_07_S:       &str = "title_07_s";
+const TITLE_08_T:       &str = "title_08_t";
+const TITLE_09_R:       &str = "title_09_r";
+const TITLE_10_I:       &str = "title_10_i";
+const TITLE_11_K:       &str = "title_11_k";
+const TITLE_12_E:       &str = "title_12_e";
+
 
 //===================
 // Define menu state
@@ -81,6 +94,9 @@ impl SimpleState for MainMenuState {
         // Not an ideal solutioin, should be configured in a ron file.
         if !self.main_menu_is_ready {
             if self.main_menu_screen.is_some() {
+                //---------
+                // Buttons
+                //---------
                 self.main_menu_button_1p = data.world.exec(|ui_finder: UiFinder<'_>| {
                     ui_finder.find(BUTTON_1_PLAYER) 
                 });
@@ -169,6 +185,9 @@ impl SimpleState for MainMenuState {
                     );
                 }
 
+                //--------
+                // Cursor
+                //--------
                 self.main_menu_cursor = data.world.exec(|ui_finder: UiFinder<'_>| {
                     ui_finder.find(CURSOR) 
                 });
@@ -201,6 +220,165 @@ impl SimpleState for MainMenuState {
                     );
                 }
 
+                //--------
+                // Title
+                //--------
+                if let Some(title_01_p) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_01_P)
+                })  {
+                    impl_jumping_comp(
+                        &title_01_p,
+                        data,
+                        MAIN_MENU,
+                        0,
+                        true,
+                        1.,
+                        1.,
+                    );
+                } 
+                if let Some(title_02_a) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_02_A)
+                })  {
+                    impl_jumping_comp(
+                        &title_02_a,
+                        data,
+                        MAIN_MENU,
+                        1,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }     
+                if let Some(title_03_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_03_D)
+                })  {
+                    impl_jumping_comp(
+                        &title_03_d,
+                        data,
+                        MAIN_MENU,
+                        2,
+                        true,
+                        1.,
+                        1.,
+                    );
+                } 
+                if let Some(title_04_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_04_D)
+                })  {
+                    impl_jumping_comp(
+                        &title_04_d,
+                        data,
+                        MAIN_MENU,
+                        3,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }   
+                if let Some(title_05_l) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_05_L)
+                })  {
+                    impl_jumping_comp(
+                        &title_05_l,
+                        data,
+                        MAIN_MENU,
+                        4,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }    
+                if let Some(title_06_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_06_E)
+                })  {
+                    impl_jumping_comp(
+                        &title_06_e,
+                        data,
+                        MAIN_MENU,
+                        5,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }       
+                if let Some(title_07_s) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_07_S)
+                })  {
+                    impl_jumping_comp(
+                        &title_07_s,
+                        data,
+                        MAIN_MENU,
+                        6,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }                    
+                if let Some(title_08_t) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_08_T)
+                })  {
+                    impl_jumping_comp(
+                        &title_08_t,
+                        data,
+                        MAIN_MENU,
+                        7,
+                        true,
+                        1.,
+                        1.,
+                    );
+                } 
+                if let Some(title_09_r) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_09_R)
+                })  {
+                    impl_jumping_comp(
+                        &title_09_r,
+                        data,
+                        MAIN_MENU,
+                        8,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }     
+                if let Some(title_10_i) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_10_I)
+                })  {
+                    impl_jumping_comp(
+                        &title_10_i,
+                        data,
+                        MAIN_MENU,
+                        9,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }     
+                if let Some(title_11_k) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_11_K)
+                })  {
+                    impl_jumping_comp(
+                        &title_11_k,
+                        data,
+                        MAIN_MENU,
+                        10,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }     
+                if let Some(title_12_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
+                    ui_finder.find(TITLE_12_E)
+                })  {
+                    impl_jumping_comp(
+                        &title_12_e,
+                        data,
+                        MAIN_MENU,
+                        11,
+                        true,
+                        1.,
+                        1.,
+                    );
+                }     
                 self.main_menu_is_ready = true;
             }
         }

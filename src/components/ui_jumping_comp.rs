@@ -4,11 +4,13 @@ use amethyst::{
 };
 
 #[derive(Clone, new)]
-struct UiJumpingComp {
-    group:      String,     // jumping group
-    order:      usize,      // jumping order, 
-    interval:   f32,        // jumping interval
-    height:     f32,        // jumping height
+pub struct UiJumpingComp {
+    pub orginal_pos:    (f32, f32),     // saved original position
+    pub group:          String,
+    pub order:          usize, 
+    pub is_jumping:     bool,
+    pub rate:           f32,   
+    pub height:         f32,   
 }
 
 // make it component

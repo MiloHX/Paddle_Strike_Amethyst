@@ -41,9 +41,12 @@ impl<'s> System<'s> for UiSwingingSystem {
                         tran.local_x = swinging_item.orginal_pos.0 + factor;
                     }
                     UiSwingingStyle::Vertical => {
-                        tran.local_x = swinging_item.orginal_pos.1 + factor;
+                        tran.local_y = swinging_item.orginal_pos.1 + factor;
                     }
                 }
+            } else {
+                tran.local_x = swinging_item.orginal_pos.0;
+                tran.local_y = swinging_item.orginal_pos.1;
             }
         }
     }

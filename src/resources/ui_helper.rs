@@ -12,6 +12,7 @@ use crate::components::ui_flashing_comp::UiFlashingComp;
 use crate::components::ui_flashing_comp::UiFlashingStyle;
 use crate::components::ui_swinging_comp::UiSwingingComp;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
+use crate::components::ui_jumping_comp::UiJumpingComp;
 use crate::components::ui_cursor_comp::UiCursorComp;
 use crate::components::ui_cursor_option_comp::UiCursorOptionComp;
 use crate::components::ui_cursor_option_comp::UiCursorOptionStyle;
@@ -63,6 +64,28 @@ pub fn impl_swinging_comp (
     let _insert_result = swinging_comp_write_storage.insert(
         *ui_entity, 
         UiSwingingComp::new((org_x, org_y), is_swinging, rate, amplitude, style),
+    );
+}
+
+pub fn impl_jumping_comp (
+    ui_entity:  &Entity,
+    data:       &mut StateData<GameData>,
+    group:      &str,
+    order:      usize,
+    is_jumping: bool,
+    rate:       f32,
+    height:     f32,
+) {
+    // get the original x and y values 
+    let ui_tran_storage = data.world.read_storage::<UiTransform>();
+    let ui_item = ui_tran_storage.get(*ui_entity).unwrap();
+    let (org_x, org_y) = (ui_item.local_x, ui_item.local_y);
+
+    // add swinging component to the entity
+    let mut swinging_comp_write_storage = data.world.write_storage::<UiJumpingComp>();
+    let _insert_result = swinging_comp_write_storage.insert(
+        *ui_entity, 
+        UiJumpingComp::new((org_x, org_y), group.to_string(), order, is_jumping, rate, height),
     );
 }
 

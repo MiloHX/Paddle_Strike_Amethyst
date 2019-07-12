@@ -6,6 +6,7 @@ use amethyst::{
 use crate::systems::ui_flashing_system::UiFlashingSystem;
 use crate::systems::ui_swinging_system::UiSwingingSystem;
 use crate::systems::ui_cursor_system::UiCursorSystem;
+use crate::systems::ui_jumping_system::UiJumpingSystem;
 
 pub struct PsUiBundle;
 
@@ -14,6 +15,7 @@ impl<'a, 'b> SystemBundle<'a, 'b> for PsUiBundle {
         builder.add(UiFlashingSystem, "ui_flashing_system", &[]);
         builder.add(UiSwingingSystem, "ui_swinging_system", &[]);
         builder.add(UiCursorSystem, "ui_cursor_system", &[]);
+        builder.add(UiJumpingSystem, "ui_jumping_system", &[]);
         Ok(())
     }
 }

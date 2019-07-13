@@ -6,11 +6,13 @@
         "confirm": [
             [Key(Return)]
         ],
-        "up": [
-            [Key(W)]
+        "ui_up": [
+            [Key(W)],
+            [Key(Up)],
         ],
-        "down": [
-            [Key(S)]
+        "ui_down": [
+            [Key(S)],
+            [Key(Down)],
         ],
     },
 )

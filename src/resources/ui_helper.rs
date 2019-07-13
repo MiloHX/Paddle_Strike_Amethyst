@@ -4,6 +4,7 @@ use amethyst::{
     ui::{
         UiText,
         UiTransform,
+        UiFinder,
     },
 };
 
@@ -150,4 +151,35 @@ pub fn get_cursor_action (
         return cursor.pos_id_list[cursor.current_pos].clone();
     } 
     "".to_string()
+}
+
+pub fn impl_bulk_jumping (
+    item_ids:   Vec<&str>,
+    data:       &mut StateData<GameData>,
+    group:      &str,
+    is_jumping: bool,
+    rate:       f32,
+    height:     f32,
+    cut_off:    f32,
+    delay:      f32,
+) {
+    let mut order:usize = 0;
+    for item_id in item_ids {
+        if let Some(item) = data.world.exec(|ui_finder: UiFinder<'_>| {
+            ui_finder.find(item_id)
+        })  {
+            impl_jumping_comp(
+                &item,
+                data,
+                group,
+                order,
+                is_jumping,
+                rate,
+                height,
+                cut_off,
+                delay,
+            );
+            order += 1;
+        }
+    }
 }

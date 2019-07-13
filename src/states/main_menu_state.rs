@@ -223,190 +223,30 @@ impl SimpleState for MainMenuState {
                 //--------
                 // Title
                 //--------
-                let rate =0.5;
-                let height = 5.;
-                let cut_off = 0.9;
-                let delay = 0.2;
-                if let Some(title_01_p) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_01_P)
-                })  {
-                    impl_jumping_comp(
-                        &title_01_p,
-                        data,
-                        MAIN_MENU,
-                        0,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                } 
-                if let Some(title_02_a) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_02_A)
-                })  {
-                    impl_jumping_comp(
-                        &title_02_a,
-                        data,
-                        MAIN_MENU,
-                        1,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }     
-                if let Some(title_03_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_03_D)
-                })  {
-                    impl_jumping_comp(
-                        &title_03_d,
-                        data,
-                        MAIN_MENU,
-                        2,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                } 
-                if let Some(title_04_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_04_D)
-                })  {
-                    impl_jumping_comp(
-                        &title_04_d,
-                        data,
-                        MAIN_MENU,
-                        3,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }   
-                if let Some(title_05_l) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_05_L)
-                })  {
-                    impl_jumping_comp(
-                        &title_05_l,
-                        data,
-                        MAIN_MENU,
-                        4,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }    
-                if let Some(title_06_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_06_E)
-                })  {
-                    impl_jumping_comp(
-                        &title_06_e,
-                        data,
-                        MAIN_MENU,
-                        5,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }       
-                if let Some(title_07_s) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_07_S)
-                })  {
-                    impl_jumping_comp(
-                        &title_07_s,
-                        data,
-                        MAIN_MENU,
-                        6,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }                    
-                if let Some(title_08_t) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_08_T)
-                })  {
-                    impl_jumping_comp(
-                        &title_08_t,
-                        data,
-                        MAIN_MENU,
-                        7,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                } 
-                if let Some(title_09_r) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_09_R)
-                })  {
-                    impl_jumping_comp(
-                        &title_09_r,
-                        data,
-                        MAIN_MENU,
-                        8,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }     
-                if let Some(title_10_i) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_10_I)
-                })  {
-                    impl_jumping_comp(
-                        &title_10_i,
-                        data,
-                        MAIN_MENU,
-                        9,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }     
-                if let Some(title_11_k) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_11_K)
-                })  {
-                    impl_jumping_comp(
-                        &title_11_k,
-                        data,
-                        MAIN_MENU,
-                        10,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }     
-                if let Some(title_12_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(TITLE_12_E)
-                })  {
-                    impl_jumping_comp(
-                        &title_12_e,
-                        data,
-                        MAIN_MENU,
-                        11,
-                        true,
-                        rate,
-                        height,
-                        cut_off,
-                        delay,
-                    );
-                }     
+                impl_bulk_jumping(
+                    vec![
+                        TITLE_01_P,
+                        TITLE_02_A,
+                        TITLE_03_D,
+                        TITLE_04_D,
+                        TITLE_05_L,
+                        TITLE_06_E,
+                        TITLE_07_S,
+                        TITLE_08_T,
+                        TITLE_09_R,
+                        TITLE_10_I,
+                        TITLE_11_K,
+                        TITLE_12_E,
+                    ],
+                    data,
+                    MAIN_MENU,
+                    true,
+                    0.7,
+                    5.,
+                    0.9,
+                    0.3,                   
+                );
+ 
                 self.main_menu_is_ready = true;
             }
         }
@@ -430,11 +270,11 @@ impl SimpleState for MainMenuState {
                                 return Trans::Quit;
                             }
                         }
-                    } else if action == "up" {
+                    } else if action == "ui_up" {
                         if let Some(cursor) = self.main_menu_cursor {
                             move_cursor(&cursor, &mut data, false);
                         }
-                    } else if action == "down" {
+                    } else if action == "ui_down" {
                         if let Some(cursor) = self.main_menu_cursor {
                             move_cursor(&cursor, &mut data, true);
                         }                     

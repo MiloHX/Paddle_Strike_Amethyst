@@ -8,8 +8,8 @@ use amethyst::{
 };
 
 // local modules
-use crate::components::ui_flashing_comp::UiFlashingComp;
-use crate::components::ui_flashing_comp::UiFlashingStyle;
+use crate::components::ui_glowing_comp::UiGlowingComp;
+use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::components::ui_swinging_comp::UiSwingingComp;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
 use crate::components::ui_jumping_comp::UiJumpingComp;
@@ -17,23 +17,23 @@ use crate::components::ui_cursor_comp::UiCursorComp;
 use crate::components::ui_cursor_option_comp::UiCursorOptionComp;
 use crate::components::ui_cursor_option_comp::UiCursorOptionStyle;
 
-pub fn impl_flashing_comp (
+pub fn impl_glowing_comp (
     text_entity:    &Entity, 
     data:           &mut StateData<GameData>,
-    is_flashing:    bool,
+    is_glowing:    bool,
     rate:           f32, 
     intensity:      f32,
-    style:          UiFlashingStyle,
+    style:          UiGlowingStyle,
     rgba_factors:   [f32; 4],
 ) {
     // get the UiText color
     let text_color = get_text_color(text_entity, data);
 
-    // add flashing component to the entity
-    let mut flashing_comp_write_storage = data.world.write_storage::<UiFlashingComp>();
-    let _insert_result = flashing_comp_write_storage.insert(
+    // add glowing component to the entity
+    let mut glowing_comp_write_storage = data.world.write_storage::<UiGlowingComp>();
+    let _insert_result = glowing_comp_write_storage.insert(
         *text_entity, 
-        UiFlashingComp::new(text_color, is_flashing, rate, intensity, style, rgba_factors),
+        UiGlowingComp::new(text_color, is_glowing, rate, intensity, style, rgba_factors),
     );
 }
 
@@ -75,6 +75,8 @@ pub fn impl_jumping_comp (
     is_jumping: bool,
     rate:       f32,
     height:     f32,
+    cut_off:    f32,
+    delay:      f32,
 ) {
     // get the original x and y values 
     let ui_tran_storage = data.world.read_storage::<UiTransform>();
@@ -85,7 +87,7 @@ pub fn impl_jumping_comp (
     let mut swinging_comp_write_storage = data.world.write_storage::<UiJumpingComp>();
     let _insert_result = swinging_comp_write_storage.insert(
         *ui_entity, 
-        UiJumpingComp::new((org_x, org_y), group.to_string(), order, is_jumping, rate, height),
+        UiJumpingComp::new((org_x, org_y), group.to_string(), order, is_jumping, rate, height, cut_off, delay),
     );
 }
 

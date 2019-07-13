@@ -9,12 +9,12 @@ use amethyst::{
 #[derive(Clone)]
 #[allow(dead_code)]
 pub enum UiCursorOptionStyle {
-    Flashing,
+    Glowing,
 }
 
 impl Default for UiCursorOptionStyle{
     fn default() -> Self {
-        UiCursorOptionStyle::Flashing
+        UiCursorOptionStyle::Glowing
     }
 }
 

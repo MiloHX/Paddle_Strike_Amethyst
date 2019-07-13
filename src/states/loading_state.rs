@@ -19,10 +19,10 @@ use amethyst::{
 };
 
 // local modules
-use crate::components::ui_flashing_comp::UiFlashingStyle;
+use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::states::disclaimer_state::DisclaimerState;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
-use crate::resources::ui_helper::impl_flashing_comp;
+use crate::resources::ui_helper::impl_glowing_comp;
 
 //===========
 // Constants
@@ -119,13 +119,13 @@ impl SimpleState for LoadingState {
                 ui_finder.find(LOADING_TEXT_ID) 
             });
             if let Some(loading_text) = self.loading_screen_text {   
-                impl_flashing_comp(
+                impl_glowing_comp(
                     &loading_text, 
                     data, 
                     true, 
                     1., 
                     0.8, 
-                    UiFlashingStyle::Darkening, 
+                    UiGlowingStyle::Darkening, 
                     [1., 1., 0., 0.]
                 );
             }

@@ -12,9 +12,9 @@ use amethyst::{
 
 // local modules
 use crate::states::main_menu_state::MainMenuState;
-use crate::components::ui_flashing_comp::UiFlashingStyle;
+use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
-use crate::resources::ui_helper::impl_flashing_comp;
+use crate::resources::ui_helper::impl_glowing_comp;
 
 //===========
 // Constants
@@ -69,13 +69,13 @@ impl SimpleState for DisclaimerState {
                     ui_finder.find(INSTRUCTION) 
                 });
                 if let Some(instruction) = self.disclaimer_instruct {   
-                    impl_flashing_comp(
+                    impl_glowing_comp(
                         &instruction, 
                         data, 
                         true, 
                         1., 
                         0.8, 
-                        UiFlashingStyle::Darkening, 
+                        UiGlowingStyle::Darkening, 
                         [1., 1., 0., 0.]
                     );
                 }

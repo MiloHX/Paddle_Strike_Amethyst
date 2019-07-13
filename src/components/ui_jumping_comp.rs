@@ -9,8 +9,10 @@ pub struct UiJumpingComp {
     pub group:          String,
     pub order:          usize, 
     pub is_jumping:     bool,
-    pub rate:           f32,   
-    pub height:         f32,   
+    pub rate:           f32,
+    pub height:         f32,
+    pub cut_off:        f32,
+    pub delay:          f32,
 }
 
 // make it component

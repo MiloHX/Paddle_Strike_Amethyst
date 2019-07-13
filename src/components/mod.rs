@@ -9,7 +9,7 @@
 //
 
 // declare modules
-pub mod ui_flashing_comp;
+pub mod ui_glowing_comp;
 pub mod ui_swinging_comp;
 pub mod ui_cursor_comp;
 pub mod ui_cursor_option_comp;

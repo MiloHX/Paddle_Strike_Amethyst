@@ -7,7 +7,7 @@ use amethyst::{
 };
 
 // local modules
-use crate::components::ui_flashing_comp::UiFlashingStyle;
+use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
 use crate::components::ui_cursor_option_comp::UiCursorOptionStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
@@ -101,13 +101,13 @@ impl SimpleState for MainMenuState {
                     ui_finder.find(BUTTON_1_PLAYER) 
                 });
                 if let Some(button_1p) = self.main_menu_button_1p {
-                    impl_flashing_comp(
+                    impl_glowing_comp(
                         &button_1p,
                         data,
                         true, 
                         1., 
                         0.8, 
-                        UiFlashingStyle::Lightening, 
+                        UiGlowingStyle::Lightening, 
                         [1., 1., 0., 0.]
                     );
                     impl_cursor_option_comp(
@@ -115,7 +115,7 @@ impl SimpleState for MainMenuState {
                         BUTTON_1_PLAYER,
                         &button_1p,
                         data,
-                        UiCursorOptionStyle::Flashing,
+                        UiCursorOptionStyle::Glowing,
                     );
                 }
 
@@ -123,13 +123,13 @@ impl SimpleState for MainMenuState {
                     ui_finder.find(BUTTON_2_PLAYERS) 
                 });
                 if let Some(button_2p) = self.main_menu_button_2p {
-                    impl_flashing_comp(
+                    impl_glowing_comp(
                         &button_2p,
                         data,
                         false, 
                         1., 
                         0.8, 
-                        UiFlashingStyle::Lightening, 
+                        UiGlowingStyle::Lightening, 
                         [1., 1., 0., 0.]
                     );
                     impl_cursor_option_comp(
@@ -137,7 +137,7 @@ impl SimpleState for MainMenuState {
                         BUTTON_2_PLAYERS,
                         &button_2p,
                         data,
-                        UiCursorOptionStyle::Flashing,
+                        UiCursorOptionStyle::Glowing,
                     );
                 }
 
@@ -145,13 +145,13 @@ impl SimpleState for MainMenuState {
                     ui_finder.find(BUTTON_CPU_V_CPU) 
                 });
                 if let Some(button_cpu) = self.main_menu_button_cpu {
-                    impl_flashing_comp(
+                    impl_glowing_comp(
                         &button_cpu,
                         data,
                         false, 
                         1., 
                         0.8, 
-                        UiFlashingStyle::Lightening, 
+                        UiGlowingStyle::Lightening, 
                         [1., 1., 0., 0.]
                     );
                     impl_cursor_option_comp(
@@ -159,7 +159,7 @@ impl SimpleState for MainMenuState {
                         BUTTON_CPU_V_CPU,
                         &button_cpu,
                         data,
-                        UiCursorOptionStyle::Flashing,
+                        UiCursorOptionStyle::Glowing,
                     );
                 }
 
@@ -167,13 +167,13 @@ impl SimpleState for MainMenuState {
                     ui_finder.find(BUTTON_EXIT) 
                 });
                 if let Some(button_exit) = self.main_menu_button_exit {
-                    impl_flashing_comp(
+                    impl_glowing_comp(
                         &button_exit,
                         data,
                         false, 
                         1., 
                         0.8, 
-                        UiFlashingStyle::Lightening, 
+                        UiGlowingStyle::Lightening, 
                         [1., 1., 0., 0.]
                     );
                     impl_cursor_option_comp(
@@ -181,7 +181,7 @@ impl SimpleState for MainMenuState {
                         BUTTON_EXIT,
                         &button_exit,
                         data,
-                        UiCursorOptionStyle::Flashing,
+                        UiCursorOptionStyle::Glowing,
                     );
                 }
 
@@ -223,6 +223,10 @@ impl SimpleState for MainMenuState {
                 //--------
                 // Title
                 //--------
+                let rate =0.5;
+                let height = 5.;
+                let cut_off = 0.9;
+                let delay = 0.2;
                 if let Some(title_01_p) = data.world.exec(|ui_finder: UiFinder<'_>| {
                     ui_finder.find(TITLE_01_P)
                 })  {
@@ -232,8 +236,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         0,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 } 
                 if let Some(title_02_a) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -245,8 +251,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         1,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }     
                 if let Some(title_03_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -258,8 +266,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         2,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 } 
                 if let Some(title_04_d) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -271,8 +281,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         3,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }   
                 if let Some(title_05_l) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -284,8 +296,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         4,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }    
                 if let Some(title_06_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -297,8 +311,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         5,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }       
                 if let Some(title_07_s) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -310,8 +326,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         6,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }                    
                 if let Some(title_08_t) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -323,8 +341,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         7,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 } 
                 if let Some(title_09_r) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -336,8 +356,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         8,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }     
                 if let Some(title_10_i) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -349,8 +371,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         9,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }     
                 if let Some(title_11_k) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -362,8 +386,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         10,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }     
                 if let Some(title_12_e) = data.world.exec(|ui_finder: UiFinder<'_>| {
@@ -375,8 +401,10 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         11,
                         true,
-                        1.,
-                        1.,
+                        rate,
+                        height,
+                        cut_off,
+                        delay,
                     );
                 }     
                 self.main_menu_is_ready = true;

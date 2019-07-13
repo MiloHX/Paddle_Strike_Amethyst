@@ -10,7 +10,7 @@
 //
 
 // declare modules
-pub mod ui_flashing_system;
+pub mod ui_glowing_system;
 pub mod ui_swinging_system;
 pub mod ps_ui_bundle;
 pub mod ui_cursor_system;

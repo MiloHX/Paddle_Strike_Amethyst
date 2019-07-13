@@ -27,13 +27,15 @@ impl<'s> System<'s> for UiJumpingSystem {
         //----------------------------
         for (tran, jumping_item,) in (&mut transforms, &jumping_items,).join() {
              if jumping_item.is_jumping {
-                let factor: f32 = (
+                let sin_val: f32 = (
                     sys_time.absolute_real_time_seconds() as f32 
                     * 4. 
                     * jumping_item.rate
-                    - (0.1 * jumping_item.order as f32)
-                ).sin() * 0.5 * 75. * jumping_item.height;
-                tran.local_y = jumping_item.orginal_pos.1 + factor.max(0.);
+                    - (jumping_item.delay * jumping_item.order as f32)
+                ).sin();
+                let sin_val_cut = (sin_val - jumping_item.cut_off).max(0.);
+                let factor = sin_val_cut * 0.5 * 75. * jumping_item.height;
+                tran.local_y = jumping_item.orginal_pos.1 + factor;
              } else {
                 tran.local_y = jumping_item.orginal_pos.1;
              }

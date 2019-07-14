@@ -223,7 +223,7 @@ impl SimpleState for MainMenuState {
                 //--------
                 // Title
                 //--------
-                impl_bulk_jumping(
+                impl_bulk_waving(
                     vec![
                         TITLE_01_P,
                         TITLE_02_A,
@@ -241,10 +241,13 @@ impl SimpleState for MainMenuState {
                     data,
                     MAIN_MENU,
                     true,
-                    0.7,
-                    5.,
-                    0.9,
-                    0.3,                   
+                    1.,     // rate
+                    1.,     // height
+                    0.,     // high cut
+                    1.,     // low cut
+                    0.2,     // delay
+                    1.,     // play time
+                    4.,     // wait time
                 );
  
                 self.main_menu_is_ready = true;

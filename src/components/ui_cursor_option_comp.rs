@@ -6,7 +6,7 @@ use amethyst::{
 //=====================
 // Cursor Option Style
 //=====================
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 #[allow(dead_code)]
 pub enum UiCursorOptionStyle {
     Glowing,

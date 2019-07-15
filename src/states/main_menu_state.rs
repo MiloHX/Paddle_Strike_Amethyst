@@ -1,5 +1,6 @@
 // amethyst modules
 use amethyst::{
+    core::timing::Time,
     ecs::Entity,
     prelude::*,
     input::InputEvent,
@@ -7,17 +8,19 @@ use amethyst::{
 };
 
 // local modules
+use crate::states::arcade_game_state::ArcadeGameState;
 use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
-use crate::components::ui_cursor_option_comp::UiCursorOptionStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::*;
+use crate::mx_utils::mx_timer::MxTimer;
 
 
 //===========
 // Constants
 //===========
 const MAIN_MENU:        &str = "main_menu";
+const BUTTON_ARCADE:    &str = "button_arcade";
 const BUTTON_1_PLAYER:  &str = "button_1_player";
 const BUTTON_2_PLAYERS: &str = "button_2_players";
 const BUTTON_CPU_V_CPU: &str = "button_cpu_v_cpu";
@@ -45,11 +48,10 @@ pub struct MainMenuState {
     // Loading screen entity
     main_menu_screen:       Option<Entity>,
     main_menu_cursor:       Option<Entity>,
-    main_menu_button_1p:    Option<Entity>,
-    main_menu_button_2p:    Option<Entity>,
-    main_menu_button_cpu:   Option<Entity>,
-    main_menu_button_exit:  Option<Entity>,
+    main_menu_buttons:      Vec<Option<Entity>>,
     main_menu_is_ready:     bool,
+    transition_timer:       MxTimer,
+    triggered_action:       String,
 }
 
 impl SimpleState for MainMenuState {
@@ -57,7 +59,7 @@ impl SimpleState for MainMenuState {
     fn on_start(&mut self, data: StateData<GameData>) {
 
         // assume UiPrefab loading has happened in a previous state
-        // look through the UiPrefabRegistry for the "disclaimer" prefab and instantiate it
+        // look through the UiPrefabRegistry for the "main menu" prefab and instantiate it
         let main_menu_prefab = data
             .world
             .read_resource::<UiPrefabRegistry>()
@@ -70,19 +72,17 @@ impl SimpleState for MainMenuState {
                 .build()
             );
         }
+        self.transition_timer.set(2., false);
+        self.triggered_action = "".to_string();
     }
 
     fn on_stop(&mut self, data: StateData<GameData>) {
         self.main_menu_is_ready = false;
         if let Some(main_menu_screen) = self.main_menu_screen {
             if data.world.delete_entity(main_menu_screen).is_ok() {
-                self.main_menu_button_1p    = None;
-                self.main_menu_button_2p    = None;
-                self.main_menu_button_cpu   = None;
-                self.main_menu_button_exit  = None;
+                self.main_menu_buttons.clear();
                 self.main_menu_cursor       = None;
                 self.main_menu_screen       = None;
-
             }
         }
     }
@@ -97,93 +97,23 @@ impl SimpleState for MainMenuState {
                 //---------
                 // Buttons
                 //---------
-                self.main_menu_button_1p = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(BUTTON_1_PLAYER) 
-                });
-                if let Some(button_1p) = self.main_menu_button_1p {
-                    impl_glowing_comp(
-                        &button_1p,
-                        data,
-                        true, 
-                        1., 
-                        0.8, 
-                        UiGlowingStyle::Lightening, 
-                        [1., 1., 0., 0.]
-                    );
-                    impl_cursor_option_comp(
-                        MAIN_MENU,
+                self.main_menu_buttons = impl_bulk_button(
+                    vec![
+                        BUTTON_ARCADE,
                         BUTTON_1_PLAYER,
-                        &button_1p,
-                        data,
-                        UiCursorOptionStyle::Glowing,
-                    );
-                }
-
-                self.main_menu_button_2p = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(BUTTON_2_PLAYERS) 
-                });
-                if let Some(button_2p) = self.main_menu_button_2p {
-                    impl_glowing_comp(
-                        &button_2p,
-                        data,
-                        false, 
-                        1., 
-                        0.8, 
-                        UiGlowingStyle::Lightening, 
-                        [1., 1., 0., 0.]
-                    );
-                    impl_cursor_option_comp(
-                        MAIN_MENU,
                         BUTTON_2_PLAYERS,
-                        &button_2p,
-                        data,
-                        UiCursorOptionStyle::Glowing,
-                    );
-                }
-
-                self.main_menu_button_cpu = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(BUTTON_CPU_V_CPU) 
-                });
-                if let Some(button_cpu) = self.main_menu_button_cpu {
-                    impl_glowing_comp(
-                        &button_cpu,
-                        data,
-                        false, 
-                        1., 
-                        0.8, 
-                        UiGlowingStyle::Lightening, 
-                        [1., 1., 0., 0.]
-                    );
-                    impl_cursor_option_comp(
-                        MAIN_MENU,
                         BUTTON_CPU_V_CPU,
-                        &button_cpu,
-                        data,
-                        UiCursorOptionStyle::Glowing,
-                    );
-                }
-
-                self.main_menu_button_exit = data.world.exec(|ui_finder: UiFinder<'_>| {
-                    ui_finder.find(BUTTON_EXIT) 
-                });
-                if let Some(button_exit) = self.main_menu_button_exit {
-                    impl_glowing_comp(
-                        &button_exit,
-                        data,
-                        false, 
-                        1., 
-                        0.8, 
-                        UiGlowingStyle::Lightening, 
-                        [1., 1., 0., 0.]
-                    );
-                    impl_cursor_option_comp(
-                        MAIN_MENU,
                         BUTTON_EXIT,
-                        &button_exit,
-                        data,
-                        UiCursorOptionStyle::Glowing,
-                    );
-                }
+                    ],
+                    data,
+                    MAIN_MENU,
+                    true,                       // is glowing
+                    1.,                         // glowing rate
+                    0.8,                        // glowing intensity
+                    UiGlowingStyle::Lightening, // glowing style
+                    [1., 1., 0., 0.],           // rgba factor
+                    0.7,                        // flash rate
+                );
 
                 //--------
                 // Cursor
@@ -207,15 +137,17 @@ impl SimpleState for MainMenuState {
                         MAIN_MENU,
                         vec![
                             (-160., 0.), 
-                            (-160., -100.),
-                            (-160., -200.),
-                            (-160., -350.),
+                            (-160., -80.),
+                            (-160., -160.),
+                            (-160., -240.),
+                            (-160., -360.),
                         ],
                         vec![
-                            BUTTON_1_PLAYER.to_string(), 
-                            BUTTON_2_PLAYERS.to_string(), 
-                            BUTTON_CPU_V_CPU.to_string(), 
-                            BUTTON_EXIT.to_string(),
+                            BUTTON_ARCADE,
+                            BUTTON_1_PLAYER, 
+                            BUTTON_2_PLAYERS, 
+                            BUTTON_CPU_V_CPU, 
+                            BUTTON_EXIT,
                         ],
                     );
                 }
@@ -245,49 +177,73 @@ impl SimpleState for MainMenuState {
                     1.,     // height
                     0.,     // high cut
                     1.,     // low cut
-                    0.2,     // delay
-                    1.,     // play time
-                    4.,     // wait time
+                    0.15,   // delay
+                    1.3,    // play time
+                    5.,     // wait time
                 );
  
                 self.main_menu_is_ready = true;
+            }
+        } else if !self.triggered_action.is_empty() {
+            let time = data.world.read_resource::<Time>();
+            if self.transition_timer.update(&*time) {
+                if self.triggered_action == BUTTON_ARCADE {
+                    return Trans::Switch(Box::new(ArcadeGameState::default()));
+                }
             }
         }
         Trans::None
     }
 
     fn handle_event(&mut self, mut data: StateData<GameData>, event: StateEvent) -> SimpleTrans {
-        match event {
-            StateEvent::Input(input_event) => {
-                if let InputEvent::ActionPressed(action) = input_event {
-                    if action == "confirm" {
-                        if let Some(cursor) = self.main_menu_cursor {
-                            let action = get_cursor_action(&cursor, &mut data);
-                            if action.eq(BUTTON_1_PLAYER) {
-                                return Trans::Quit;
-                            } else if action.eq(BUTTON_2_PLAYERS) {
-                                return Trans::Quit;
-                            } else if action.eq(BUTTON_CPU_V_CPU) {
-                                return Trans::Quit;
-                            } else if action.eq(BUTTON_EXIT) {
-                                return Trans::Quit;
+        if self.triggered_action.is_empty() {
+            match event {
+                StateEvent::Input(input_event) => {
+                    if let InputEvent::ActionPressed(action) = input_event {
+                        if action == "confirm" {
+                            if let Some(cursor) = self.main_menu_cursor {
+                                let action = get_cursor_action(&cursor, &mut data);
+                                if action.eq(BUTTON_ARCADE) {
+                                    if let Some(button) = self.main_menu_buttons[0] {
+                                        flashing_text(&button, &mut data);
+                                        freeze_cursor(&cursor, &mut data);
+                                        self.transition_timer.start();
+                                        self.triggered_action = action.to_string();
+                                    }
+                                } else if action.eq(BUTTON_1_PLAYER) {
+                                    if let Some(button) = self.main_menu_buttons[1] {
+                                        flashing_text(&button, &mut data);
+                                    }
+                                } else if action.eq(BUTTON_2_PLAYERS) {
+                                    if let Some(button) = self.main_menu_buttons[2] {
+                                        flashing_text(&button, &mut data);
+                                    }
+                                } else if action.eq(BUTTON_CPU_V_CPU) {
+                                    if let Some(button) = self.main_menu_buttons[3] {
+                                        flashing_text(&button, &mut data);
+                                    }
+                                } else if action.eq(BUTTON_EXIT) {
+                                    return Trans::Quit;
+                                }
                             }
+                        } else if action == "ui_up" {
+                            if let Some(cursor) = self.main_menu_cursor {
+                                move_cursor(&cursor, &mut data, false);
+                            }
+                        } else if action == "ui_down" {
+                            if let Some(cursor) = self.main_menu_cursor {
+                                move_cursor(&cursor, &mut data, true);
+                            }                     
                         }
-                    } else if action == "ui_up" {
-                        if let Some(cursor) = self.main_menu_cursor {
-                            move_cursor(&cursor, &mut data, false);
-                        }
-                    } else if action == "ui_down" {
-                        if let Some(cursor) = self.main_menu_cursor {
-                            move_cursor(&cursor, &mut data, true);
-                        }                     
+                        Trans::None
+                    } else {
+                        Trans::None
                     }
-                    Trans::None
-                } else {
-                    Trans::None
-                }
-            },
-            _ => Trans::None,
+                },
+                _ => Trans::None
+            }
+        } else {
+            Trans::None
         }
     }
 

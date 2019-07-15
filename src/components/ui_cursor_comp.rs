@@ -11,7 +11,8 @@ pub struct UiCursorComp {
     pub group:          String,
     pub current_pos:    usize,
     pub pos_list:       Vec<(f32, f32)>,
-    pub pos_id_list:    Vec<String>,
+    pub pos_id_list:    Vec<&'static str>,
+    pub freezed:        bool,
 }
 
 #[allow(dead_code)]
@@ -21,6 +22,9 @@ impl UiCursorComp {
     }
 
     pub fn advance_pos(&mut self, direction:bool) {
+        if self.freezed {
+            return;
+        }
         if direction {
             if self.current_pos < self.pos_list.len() - 1 {
                 self.current_pos += 1;

@@ -98,11 +98,8 @@ fn main() -> amethyst::Result<()> {
     // with resource directory "resources_dir",
     // instance of the loading state "LoadingState",
     // and the "game_data" just created
-    // note that use this type of definition is because we are using custom state event.
-    // for default event types the follow way should be used
-    //      let mut game = Application::new(assets_dir, state_name, game_data)?;
     let mut game: Application<GameData> =
-        CoreApplication::build(resources_dir, LoadingState::default())?
+        Application::build(resources_dir, LoadingState::default())?
             .with_frame_limit(FrameRateLimitStrategy::Sleep, 60)
             .build(game_data)?;
 

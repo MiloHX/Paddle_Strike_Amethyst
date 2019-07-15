@@ -148,7 +148,7 @@ Container (
             image: Texture(File("assets/imgs/letter_E.png", ("IMAGE", ()))),
         ),
 
-        // options
+        // cursor
         Image(
             transform: (
                 id: "cursor",
@@ -160,13 +160,35 @@ Container (
             ),
             image: Texture(File("assets/imgs/cursor.png", ("IMAGE", ()))),
         ),  
+
+        // options
+        Label(
+            transform: (
+                id: "button_arcade",
+                x: 150.,
+                y: 0.,
+                width: 500.,
+                height: 53.,
+
+                // anchor
+                anchor: Middle,
+            ),
+
+            text: (
+                text: "ARCADE",
+                font: File("assets/fonts/players.ttf", ("TTF", ())),
+                font_size: 53.,
+                color: (0.2, 0.2, 1., 1.),
+                align: MiddleLeft,
+            )
+        ),
         Label(
             transform: (
                 id: "button_1_player",
                 x: 150.,
-                y: 0.,
+                y: -80.,
                 width: 500.,
-                height: 56.,
+                height: 53.,
 
                 // anchor
                 anchor: Middle,
@@ -175,7 +197,7 @@ Container (
             text: (
                 text: "1 PLAYER",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
-                font_size: 56.,
+                font_size: 53.,
                 color: (0.2, 0.2, 1., 1.),
                 align: MiddleLeft,
             )
@@ -184,9 +206,9 @@ Container (
             transform: (
                 id: "button_2_players",
                 x: 150.,
-                y: -100.,
+                y: -160.,
                 width: 500.,
-                height: 56.,
+                height: 53.,
 
                 // anchor
                 anchor: Middle,
@@ -195,7 +217,7 @@ Container (
             text: (
                 text: "2 PLAYERS",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
-                font_size: 56.,
+                font_size: 53.,
                 color: (0.2, 0.2, 1., 1.),
                 align: MiddleLeft,
             )
@@ -204,9 +226,9 @@ Container (
             transform: (
                 id: "button_cpu_v_cpu",
                 x: 150.,
-                y: -200.,
+                y: -240.,
                 width: 500.,
-                height: 56.,
+                height: 53.,
 
                 // anchor
                 anchor: Middle,
@@ -215,7 +237,7 @@ Container (
             text: (
                 text: "CPU V CPU",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
-                font_size: 56.,
+                font_size: 53.,
                 color: (0.2, 0.2, 1., 1.),
                 align: MiddleLeft,
             )
@@ -224,9 +246,9 @@ Container (
             transform: (
                 id: "button_exit",
                 x: 150.,
-                y: -350.,
+                y: -360.,
                 width: 500.,
-                height: 56.,
+                height: 53.,
 
                 // anchor
                 anchor: Middle,
@@ -235,7 +257,7 @@ Container (
             text: (
                 text: "EXIT",
                 font: File("assets/fonts/players.ttf", ("TTF", ())),
-                font_size: 56.,
+                font_size: 53.,
                 color: (0.2, 0.2, 1., 1.),
                 align: MiddleLeft,
             )

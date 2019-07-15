@@ -44,7 +44,7 @@ impl<'s> System<'s> for UiWavingSystem {
                         let sin_value = 
                             (waving_item.timer.get_ratio() * PI * 2.).sin()
                             .max(waving_item.low_cut).min(waving_item.high_cut);
-                        let factor   = sin_value * 30. * waving_item.height;
+                        let factor   = sin_value * 20. * waving_item.height;
                         tran.local_y = waving_item.orginal_pos.1 + factor;
                     } else {
                         tran.local_y = waving_item.orginal_pos.1;

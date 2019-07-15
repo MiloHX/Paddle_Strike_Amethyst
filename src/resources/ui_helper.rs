@@ -13,6 +13,7 @@ use crate::components::ui_glowing_comp::UiGlowingComp;
 use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::components::ui_swinging_comp::UiSwingingComp;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
+use crate::components::ui_flashing_comp::UiFlashingComp;
 use crate::components::ui_waving_comp::UiWavingComp;
 use crate::components::ui_cursor_comp::UiCursorComp;
 use crate::components::ui_cursor_option_comp::UiCursorOptionComp;
@@ -48,12 +49,12 @@ pub fn get_text_color (
 }
 
 pub fn impl_swinging_comp (
-    ui_entity:  &Entity,
-    data:       &mut StateData<GameData>,
-    is_swinging:bool,
-    rate:       f32,
-    amplitude:  f32,
-    style:      UiSwingingStyle,
+    ui_entity:      &Entity,
+    data:           &mut StateData<GameData>,
+    is_swinging:    bool,
+    rate:           f32,
+    amplitude:      f32,
+    style:          UiSwingingStyle,
 ) {
     // get the original x and y values 
     let ui_tran_storage = data.world.read_storage::<UiTransform>();
@@ -65,6 +66,21 @@ pub fn impl_swinging_comp (
     let _insert_result = swinging_comp_write_storage.insert(
         *ui_entity, 
         UiSwingingComp::new((org_x, org_y), is_swinging, rate, amplitude, style),
+    );
+}
+
+pub fn impl_flashing_comp (
+    ui_entity:      &Entity,
+    data:           &mut StateData<GameData>,
+    is_flashing:    bool,
+    rate:           f32,
+) {
+    let text_color = get_text_color(ui_entity, data);
+
+    let mut flashing_comp_write_storage = data.world.write_storage::<UiFlashingComp>();
+    let _insert_result = flashing_comp_write_storage.insert(
+        *ui_entity, 
+        UiFlashingComp::new(text_color, is_flashing, false, rate),
     );
 }
 
@@ -130,7 +146,7 @@ pub fn impl_cursor_comp (
     data:           &mut StateData<GameData>,
     group:          &str,
     pos_list:       Vec<(f32, f32)>,
-    pos_id_list:    Vec<String>,
+    pos_id_list:    Vec<&'static str>,
 ) {
     // add cursor movement component to the entity
     let mut cursor_write_storage = data.world.write_storage::<UiCursorComp>();
@@ -140,7 +156,8 @@ pub fn impl_cursor_comp (
             group.to_string(),
             0, 
             pos_list, 
-            pos_id_list
+            pos_id_list,
+            false,
         ),
     );
 }
@@ -159,12 +176,47 @@ pub fn move_cursor (
 pub fn get_cursor_action (
     cursor:     &Entity,
     data:       &mut StateData<GameData>,
-) -> String {
+) -> &'static str {
     let mut cursor_storage = data.world.write_storage::<UiCursorComp>();
     if let Some(cursor) = cursor_storage.get_mut(*cursor) {
-        return cursor.pos_id_list[cursor.current_pos].clone();
+        return cursor.pos_id_list[cursor.current_pos];
     } 
-    "".to_string()
+    ""
+}
+
+pub fn freeze_cursor (
+    cursor:     &Entity,
+    data:       &mut StateData<GameData>,
+) {
+    let mut cursor_storage = data.world.write_storage::<UiCursorComp>();
+    if let Some(cursor) = cursor_storage.get_mut(*cursor) {
+        cursor.freezed = true;
+    }     
+}
+
+pub fn flashing_text (
+    text_entity:    &Entity,
+    data:           &mut StateData<GameData>,
+) {
+    let mut flash_storage = data.world.write_storage::<UiFlashingComp>();
+    if let Some(flashing) = flash_storage.get_mut(*text_entity) {
+        flashing.is_flashing = true;
+    }     
+}
+
+// Is there a way to set the visibility? 
+// The workaround right now is set it to transparent.
+pub fn set_text_flashing_status (
+    text_entity:    &Entity,
+    data:           &mut StateData<GameData>,
+    flash:          bool,
+    hide:           bool, 
+) {
+    let mut flash_storage = data.world.write_storage::<UiFlashingComp>();
+    if let Some(flashing) = flash_storage.get_mut(*text_entity) {
+        flashing.is_flashing = flash;
+        flashing.is_hiding = hide;
+    }     
 }
 
 pub fn impl_bulk_waving (
@@ -202,4 +254,51 @@ pub fn impl_bulk_waving (
             order += 1;
         }
     }
+}
+
+pub fn impl_bulk_button (
+    item_ids:       Vec<&str>,
+    data:           &mut StateData<GameData>,
+    group:          &str,
+    is_glowing:     bool,
+    glow_rate:      f32,
+    glow_intensity: f32,
+    glow_style:     UiGlowingStyle,
+    glow_rgba_ftr:  [f32; 4],
+    flash_rate:     f32,
+) -> Vec<Option<Entity>> {
+
+    let mut result:Vec<Option<Entity>> = Vec::new();
+
+    for item_id in item_ids {
+        if let Some(item) = data.world.exec(|ui_finder: UiFinder<'_>| {
+            ui_finder.find(item_id) 
+        }) {
+            result.push(Some(item));
+            impl_glowing_comp(
+                &item,
+                data,
+                is_glowing, 
+                glow_rate, 
+                glow_intensity, 
+                glow_style,
+                glow_rgba_ftr,
+            );
+            impl_cursor_option_comp(
+                group,
+                item_id,
+                &item,
+                data,
+                UiCursorOptionStyle::Glowing,
+            );
+            impl_flashing_comp(
+                &item,
+                data,
+                false, 
+                flash_rate,
+            );
+        }
+    }
+    
+    result
 }

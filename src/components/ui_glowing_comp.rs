@@ -6,7 +6,7 @@ use amethyst::{
 //================
 // Glowing Style
 //================
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 #[allow(dead_code)]
 pub enum UiGlowingStyle {
     TwoWays,        // color get lightened and darkened

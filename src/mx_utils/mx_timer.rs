@@ -103,3 +103,9 @@ impl MxTimer {
         return !self.is_stopped;
     }
 }
+
+impl Default for MxTimer {
+    fn default() -> Self {
+        MxTimer::new(1., false)
+    }
+}

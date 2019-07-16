@@ -13,6 +13,9 @@ use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::components::ui_swinging_comp::UiSwingingStyle;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::*;
+use crate::resources::audio::{
+    SoundType, play_sfx, resume_music, pause_music,
+};
 use crate::mx_utils::mx_timer::MxTimer;
 
 
@@ -74,6 +77,8 @@ impl SimpleState for MainMenuState {
         }
         self.transition_timer.set(2., false);
         self.triggered_action = "".to_string();
+
+        resume_music(data.world);
     }
 
     fn on_stop(&mut self, data: StateData<GameData>) {
@@ -85,6 +90,8 @@ impl SimpleState for MainMenuState {
                 self.main_menu_screen       = None;
             }
         }
+
+        pause_music(data.world);
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
@@ -201,14 +208,18 @@ impl SimpleState for MainMenuState {
                 StateEvent::Input(input_event) => {
                     if let InputEvent::ActionPressed(action) = input_event {
                         if action == "confirm" {
+                            // play sfx
+                            play_sfx(SoundType::ButtonPush, data.world);
+
+                            // handle option                       
                             if let Some(cursor) = self.main_menu_cursor {
                                 let action = get_cursor_action(&cursor, &mut data);
+                                self.triggered_action = action.to_string();
                                 if action.eq(BUTTON_ARCADE) {
                                     if let Some(button) = self.main_menu_buttons[0] {
                                         flashing_text(&button, &mut data);
                                         freeze_cursor(&cursor, &mut data);
                                         self.transition_timer.start();
-                                        self.triggered_action = action.to_string();
                                     }
                                 } else if action.eq(BUTTON_1_PLAYER) {
                                     if let Some(button) = self.main_menu_buttons[1] {

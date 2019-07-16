@@ -19,8 +19,12 @@ use amethyst::{
         RenderingSystem, SpriteSheet,
     },
     ui::UiBundle,
-    utils::application_root_dir,
     window::WindowBundle,
+    audio::{
+        AudioBundle,
+        DjSystem,
+    },
+    utils::application_root_dir,
     LogLevelFilter,
 };
 
@@ -36,6 +40,7 @@ mod mx_utils;
 use crate::render_graph::RenderGraph;
 use crate::states::loading_state::LoadingState;
 use crate::systems::ps_ui_bundle::PsUiBundle;
+use crate::resources::audio::Music;
 
 //===============
 // main function
@@ -77,6 +82,12 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
         // Add the transform bundle which handles tracking entity positions
         .with_bundle(TransformBundle::new())?
+        .with_bundle(AudioBundle::default())?
+        .with(
+            DjSystem::new(|music: &mut Music| music.music.next()),
+            "dj",
+            &[],
+        )
         // UI bundle to handle UI
         .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
         // Add user defined UI systems

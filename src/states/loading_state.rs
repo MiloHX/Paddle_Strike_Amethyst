@@ -23,6 +23,7 @@ use crate::components::ui_glowing_comp::UiGlowingStyle;
 use crate::states::disclaimer_state::DisclaimerState;
 use crate::resources::ui_prefab_registry::UiPrefabRegistry;
 use crate::resources::ui_helper::impl_glowing_comp;
+use crate::resources::audio::initialize_audio;
 
 //===========
 // Constants
@@ -56,6 +57,7 @@ impl SimpleState for LoadingState {
     // Start up tasks
     //----------------
     fn on_start(&mut self, mut data: StateData<GameData>) {
+        initialize_audio(data.world);
         let mut ui_prefab_registry = UiPrefabRegistry::default();
         self.loading_screen_progress    = Some(load_loading_screen(&mut data.world, &mut ui_prefab_registry));
         self.loading_prefabs_progress   = Some(load_prefabs(&mut data.world, &mut ui_prefab_registry));

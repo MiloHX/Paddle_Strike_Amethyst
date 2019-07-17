@@ -17,7 +17,7 @@ impl<'a, 'b> SystemBundle<'a, 'b> for PsUiBundle {
         builder.add(UiSwingingSystem, "ui_swinging_system", &[]);
         builder.add(UiCursorSystem, "ui_cursor_system", &[]);
         builder.add(UiWavingSystem, "ui_waving_system", &[]);
-        builder.add(UiFlashingSystem, "ui_flashing_system", &[]);
+        builder.add(UiFlashingSystem, "ui_flashing_system", &["ui_glowing_system"]);
         Ok(())
     }
 }

@@ -47,10 +47,10 @@ impl<'s> System<'s> for UiFlashingSystem {
                         ).sin() >= 0.;
                 if should_be_on {
                     text.color = [
-                        flashing_item.orginal_color[0], 
-                        flashing_item.orginal_color[1], 
-                        flashing_item.orginal_color[2], 
-                        flashing_item.orginal_color[3],
+                        flashing_item.flashing_color[0], 
+                        flashing_item.flashing_color[1], 
+                        flashing_item.flashing_color[2], 
+                        flashing_item.flashing_color[3],
                     ];  
                 } else {
                     text.color = [
@@ -62,13 +62,15 @@ impl<'s> System<'s> for UiFlashingSystem {
                    
                 }              
             } else {
-                // Use original color 
-                text.color = [
-                    flashing_item.orginal_color[0], 
-                    flashing_item.orginal_color[1], 
-                    flashing_item.orginal_color[2], 
-                    flashing_item.orginal_color[3],
-                ];  
+                // reset to original color
+                if flashing_item.reset_color {
+                    text.color = [
+                        flashing_item.orginal_color[0], 
+                        flashing_item.orginal_color[1], 
+                        flashing_item.orginal_color[2], 
+                        flashing_item.orginal_color[3],
+                    ]; 
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ pub struct UiCursorComp {
     pub pos_list:       Vec<(f32, f32)>,
     pub pos_id_list:    Vec<&'static str>,
     pub freezed:        bool,
+    pub start_up:       bool,
 }
 
 #[allow(dead_code)]

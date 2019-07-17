@@ -72,6 +72,7 @@ pub fn impl_swinging_comp (
 pub fn impl_flashing_comp (
     ui_entity:      &Entity,
     data:           &mut StateData<GameData>,
+    flashing_color: [f32; 4],
     is_flashing:    bool,
     rate:           f32,
 ) {
@@ -80,7 +81,7 @@ pub fn impl_flashing_comp (
     let mut flashing_comp_write_storage = data.world.write_storage::<UiFlashingComp>();
     let _insert_result = flashing_comp_write_storage.insert(
         *ui_entity, 
-        UiFlashingComp::new(text_color, is_flashing, false, rate),
+        UiFlashingComp::new(text_color, flashing_color, is_flashing, false, rate, false),
     );
 }
 
@@ -158,6 +159,7 @@ pub fn impl_cursor_comp (
             pos_list, 
             pos_id_list,
             false,
+            true,
         ),
     );
 }
@@ -265,6 +267,7 @@ pub fn impl_bulk_button (
     glow_intensity: f32,
     glow_style:     UiGlowingStyle,
     glow_rgba_ftr:  [f32; 4],
+    flashing_color: [f32; 4],
     flash_rate:     f32,
 ) -> Vec<Option<Entity>> {
 
@@ -294,6 +297,7 @@ pub fn impl_bulk_button (
             impl_flashing_comp(
                 &item,
                 data,
+                flashing_color,
                 false, 
                 flash_rate,
             );

@@ -108,3 +108,9 @@ pub fn resume_music(world: &mut World) {
     sink.play();
 }
 
+#[allow(dead_code)]
+pub fn stop_music(world: &mut World) {
+    let sink = world.write_resource::<AudioSink>();
+    sink.stop();
+}
+

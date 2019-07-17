@@ -119,6 +119,7 @@ impl SimpleState for MainMenuState {
                     0.8,                        // glowing intensity
                     UiGlowingStyle::Lightening, // glowing style
                     [1., 1., 0., 0.],           // rgba factor
+                    [1., 1., 1., 1.],           // flashing color
                     0.7,                        // flash rate
                 );
 

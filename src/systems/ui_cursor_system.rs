@@ -27,7 +27,7 @@ impl<'s> System<'s> for UiCursorSystem {
     // define what data to be retreived from the storage
     type SystemData = (
         WriteStorage<'s, UiTransform>,
-        ReadStorage<'s, UiCursorComp>,
+        WriteStorage<'s, UiCursorComp>,
         ReadStorage<'s, UiCursorOptionComp>,
         WriteStorage<'s, UiGlowingComp>,
         Read<'s, AssetStorage<Source>>,
@@ -35,18 +35,22 @@ impl<'s> System<'s> for UiCursorSystem {
         Option<Read<'s, Output>>,
     );
 
-    fn run(&mut self, (mut trans, cursors, options, mut glowings, storage, sounds, audio_output): Self::SystemData) {
-        for (tran, cursor,) in (&mut trans, &cursors,).join() {
-            if cursor.pos_list[cursor.current_pos].1 != tran.local_y {
+    fn run(&mut self, (mut trans, mut cursors, options, mut glowings, storage, sounds, audio_output): Self::SystemData) {
+        for (tran, cursor,) in (&mut trans, &mut cursors,).join() {
+            if cursor.pos_list[cursor.current_pos].1 != tran.local_y || cursor.start_up {
                 // move cursor
                 tran.local_y = cursor.pos_list[cursor.current_pos].1;
                 // play sound
-                play_sound(
-                    SoundType::CursorTick, 
-                    &*sounds,
-                    &storage,
-                    audio_output.as_ref().map(|o| o.deref()),
-                );
+                if !cursor.start_up {
+                    play_sound(
+                        SoundType::CursorTick, 
+                        &*sounds,
+                        &storage,
+                        audio_output.as_ref().map(|o| o.deref()),
+                    );
+                } else {
+                    cursor.start_up = false;
+                }
                 // highlight option
                 for (option, glowing) in (&options, &mut glowings).join() {
                     if option.group == cursor.group {

@@ -66,7 +66,7 @@ impl SimpleState for ArcadeGameState {
                 }); 
                 self.game_is_ready = true;
                 if let Some(stage_info) = self.stage_info {   
-                    impl_flashing_comp(&stage_info, data, true, 0.2);
+                    impl_flashing_comp(&stage_info, data, [1., 1., 0., 1.], true, 0.2);
                 }
                 self.transition_timer.start();
             }

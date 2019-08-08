@@ -1,6 +1,6 @@
 use amethyst::{
     core::bundle::SystemBundle, 
-    ecs::prelude::DispatcherBuilder, 
+    ecs::prelude::{DispatcherBuilder, World},
     error::Error,
 };
 use crate::systems::ui_glowing_system::UiGlowingSystem;
@@ -12,7 +12,7 @@ use crate::systems::ui_flashing_system::UiFlashingSystem;
 pub struct PsUiBundle;
 
 impl<'a, 'b> SystemBundle<'a, 'b> for PsUiBundle {
-    fn build(self, builder: &mut DispatcherBuilder<'a, 'b>) -> Result<(), Error> {
+    fn build(self, _world: &mut World, builder: &mut DispatcherBuilder<'a, 'b>) -> Result<(), Error> {
         builder.add(UiGlowingSystem, "ui_glowing_system", &[]);
         builder.add(UiSwingingSystem, "ui_swinging_system", &[]);
         builder.add(UiCursorSystem, "ui_cursor_system", &[]);

@@ -10,19 +10,24 @@ extern crate derive_new;
 
 // amethyst modules
 use amethyst::{
-    assets::Processor,
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
     input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
         types::DefaultBackend,
-        RenderingSystem, SpriteSheet,
+        RenderingBundle,
+        plugins::{
+            RenderFlat2D, 
+            RenderToWindow,
+        },
     },
-    ui::UiBundle,
-    window::WindowBundle,
+    ui::{
+        UiBundle, 
+        RenderUi,
+    },
     audio::{
         AudioBundle,
-        DjSystem,
+        DjSystemDesc,
     },
     utils::application_root_dir,
     LogLevelFilter,
@@ -34,10 +39,8 @@ use amethyst::{
 mod components;
 mod states;
 mod systems;
-mod render_graph;
 mod resources;
 mod mx_utils;
-use crate::render_graph::RenderGraph;
 use crate::states::loading_state::LoadingState;
 use crate::systems::ps_ui_bundle::PsUiBundle;
 use crate::resources::audio::Music;
@@ -46,8 +49,8 @@ use crate::resources::audio::Music;
 // main function
 //===============
 fn main() -> amethyst::Result<()> {
-    // start the logger with less vulkan related junks and
-    // please use amethyst:start_logger(Default::default()) instead if vulkan is shut up in the future
+    // start the logger with less vulkan related junks
+    // use amethyst:start_logger(Default::default()) instead if vulkan is shut up in the future
     amethyst::Logger::from_config(amethyst::LoggerConfig {
         level_filter: LogLevelFilter::Info,
         ..Default::default()
@@ -62,48 +65,44 @@ fn main() -> amethyst::Result<()> {
         .unwrap()
         + "/resources";
 
-    // display_config_path = resources_dir + "display_confg.ron"
+    // display configuration path
     let display_config_path = resources_dir.clone() + "/display_config.ron";
 
     // input configuration path
     let key_bindings_path = resources_dir.clone() + "/input.ron";
 
-
     // The global game data. Here we register all systems and bundles that will run for every game state.
-    // The game states will define additional dispatchers for state specific systems.
-    // Note that the dispatchers will run in sequence,
-    // so this setup sacrifices performance for modularity (for now).
     let game_data = GameDataBuilder::default()
-        // Input bundle to hanlde input, with the key binding configuratioin
+        // input bundle to hanlde input, with the key binding configuratioin
         .with_bundle(
             InputBundle::<StringBindings>::new().with_bindings_from_file(key_bindings_path)?,
         )?
-        // The WindowBundle provides all the scaffolding for opening a window
-        .with_bundle(WindowBundle::from_config_path(display_config_path))?
-        // Add the transform bundle which handles tracking entity positions
+        // transform bundle handles tracking entity positions
         .with_bundle(TransformBundle::new())?
+        // audio bundle handle audio
         .with_bundle(AudioBundle::default())?
-        .with(
-            DjSystem::new(|music: &mut Music| music.music.next()),
-            "dj",
+        .with_system_desc(
+            DjSystemDesc::new(|music: &mut Music| music.music.next()),
+            "dj_system",
             &[],
         )
-        // UI bundle to handle UI
-        .with_bundle(UiBundle::<DefaultBackend, StringBindings>::new())?
+        // UI bundle handles UI
+        .with_bundle(UiBundle::<StringBindings>::new())?
         // Add user defined UI systems
         .with_bundle(PsUiBundle)?
-        // Sprite sheet processor have to be loaded when DrawFlat2DDesc pass is used,
-        // or the program will panic "Tried to fetch a resource, but the resource does not exist."
-        .with(
-            Processor::<SpriteSheet>::new(),
-            "sprite_sheet_processor",
-            &[],
-        )
-        // The renderer must be executed on the same thread consecutively, so we initialize it as thread_local
-        // which will always execute on the main thread.
-        .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
-            RenderGraph::default(),
-        ));
+        // Add rendering graph
+        .with_bundle(
+            RenderingBundle::<DefaultBackend>::new()
+                // The RenderToWindow plugin provides all the scaffolding for opening a window and drawing on it
+                .with_plugin(
+                    RenderToWindow::from_config_path(display_config_path)
+                        .with_clear([0.34, 0.36, 0.52, 1.0]),
+                )
+                // render 2D
+                .with_plugin(RenderFlat2D::default())
+                // render ui
+                .with_plugin(RenderUi::default()),
+        )?;
 
     // create an Application "game"
     // with resource directory "resources_dir",

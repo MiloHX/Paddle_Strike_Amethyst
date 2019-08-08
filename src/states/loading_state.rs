@@ -9,6 +9,8 @@ use amethyst::{
         Completion, 
         ProgressCounter,
         Handle,
+        // PrefabLoader,
+        // RonFormat,
     },
     ui::{
         UiLoader,
@@ -61,7 +63,7 @@ impl SimpleState for LoadingState {
         let mut ui_prefab_registry = UiPrefabRegistry::default();
         self.loading_screen_progress    = Some(load_loading_screen(&mut data.world, &mut ui_prefab_registry));
         self.loading_prefabs_progress   = Some(load_prefabs(&mut data.world, &mut ui_prefab_registry));
-        data.world.add_resource(ui_prefab_registry);
+        data.world.insert(ui_prefab_registry);
     }
 
     //----------------
@@ -151,7 +153,6 @@ impl SimpleState for LoadingState {
         
         Trans::None
     }
-
 }
 
 // Load Loading screen in another thread, and register it
@@ -162,7 +163,7 @@ fn load_loading_screen(world: &mut World, registry:&mut UiPrefabRegistry) -> Pro
         .into_os_string()
         .into_string()
         .unwrap()
-        + "/resources/ui/loading_screen.ron";
+        + "/resources/prefabs/ui_loading/loading_screen.ron";
 
     registry.prefabs.push(world.exec(|loader: UiLoader<'_>| {
         loader.load(
@@ -177,23 +178,45 @@ fn load_loading_screen(world: &mut World, registry:&mut UiPrefabRegistry) -> Pro
 fn load_prefabs(world: &mut World, registry:&mut UiPrefabRegistry) -> ProgressCounter {
     let mut progress_counter = ProgressCounter::new();
 
-    let prefab_dir_path = application_root_dir()
+    // UI Prefabs
+    let ui_prefab_dir_path = application_root_dir()
         .unwrap()
         .into_os_string()
         .into_string()
         .unwrap()
-        + "/resources/ui/prefabs";
-    let prefab_iter = read_dir(prefab_dir_path).unwrap();
-    registry.prefabs.extend(prefab_iter
+        + "/resources/prefabs/ui";
+    let ui_prefab_iter = read_dir(ui_prefab_dir_path).unwrap();
+    registry.prefabs.extend(ui_prefab_iter
         .map(|prefab_dir_entry| {
             world.exec(|loader: UiLoader<'_>| {
                 loader.load(
-                    make_name("ui/prefabs/", &prefab_dir_entry.unwrap()),
+                    make_name("prefabs/ui/", &prefab_dir_entry.unwrap()),
                     &mut progress_counter,
                 )
             })
         })
         .collect::<Vec<Handle<UiPrefab>>>());
+    
+    // Paddle Prefabs
+    // let game_prefab_iter = {
+    //     let game_prefab_dir_path = application_root_dir()
+    //         .unwrap()
+    //         .into_os_string()
+    //         .into_string()
+    //         .unwrap()
+    //         + "/resources/prefabs/paddles";
+    //     let game_prefab_iter_temp = read_dir(game_prefab_dir_path).unwrap();
+    //     game_prefab_iter_temp.map(|game_prefab_dir_entry|{
+    //         world.exec(|loader: PrefabLoader<'_, PaddlePrefabData>| {
+    //             loader.load(
+    //                 make_name("prefabs/paddles/", &game_prefab_dir_entry.unwrap()),
+    //                 RonFormat,
+    //                 &mut progress_counter,
+    //             )
+    //         })
+    //     })
+    // };
+
     progress_counter
 }
 

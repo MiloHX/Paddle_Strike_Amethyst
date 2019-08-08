@@ -14,7 +14,10 @@ use amethyst::{
         Source,
         SourceHandle,
     },
-    ecs::prelude::World,
+    ecs::{
+        World, 
+        WorldExt,
+    },
 };
 
 const MENU_MUSIC:       &'static [&'static str] = &["assets/sounds/theme.wav"];
@@ -65,8 +68,8 @@ pub fn initialize_audio(world: &mut World) {
         (sound, music)
     };
 
-    world.add_resource(sound_effects);
-    world.add_resource(music);
+    world.insert(sound_effects);
+    world.insert(music);
 }
 
 pub fn play_sound(sound_type: SoundType, sounds: &Sounds, storage: &AssetStorage<Source>, output: Option<&Output>) {

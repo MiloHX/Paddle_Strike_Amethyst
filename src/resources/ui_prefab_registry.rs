@@ -1,6 +1,12 @@
 use amethyst::{
-    assets::{AssetStorage, Handle,},
-    ecs::World,
+    assets::{
+        AssetStorage, 
+        Handle,
+    },
+    ecs::{
+        World, 
+        WorldExt,
+    },
     ui::{UiPrefab},
 };
 
